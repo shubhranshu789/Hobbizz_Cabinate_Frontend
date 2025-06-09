@@ -12,6 +12,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import Navbar from "../../Navbar/page"
 
 
+// import "../../../Components/ParticularActivityInfo"
+
+
 function ReviewActitvity() {
     const [pic, setPic] = useState([]);
     const token = localStorage.getItem("jwt");
@@ -39,6 +42,12 @@ function ReviewActitvity() {
   const closeActivityModal = () => {
     setSelectedActivity(null)
   }
+
+
+  const handleClickSubmitId = (id) => {
+   router.push(`../../../Components/ParticularActivityInfo?id=${id}`);
+  };
+
 
 
 
@@ -86,7 +95,7 @@ function ReviewActitvity() {
 
 
 
-            <div className="container mx-auto px-4 pb-16">
+            <div className="container mx-auto px-4 pb-16" style={{marginTop : "60px"}}>
                     <h2 className="text-2xl font-bold text-white mb-6">Recent Activities</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {pic.map((activity) => (
@@ -99,7 +108,9 @@ function ReviewActitvity() {
                           className="h-full"
                         >
                           <Card className="overflow-hidden h-full bg-white/95 backdrop-blur-sm hover:shadow-xl transition-shadow duration-300">
-                             <div className="relative cursor-pointer" onClick={() => openActivityModal(activity)}>
+                             <div className="relative cursor-pointer" 
+                             onClick={() => handleClickSubmitId(activity._id)}
+                             >
                               <img
                                 src={activity.pic || "/placeholder.svg"}
                                 alt={activity.title}
@@ -112,7 +123,8 @@ function ReviewActitvity() {
                               <h3 className="text-xl font-bold mb-2">{activity.title}</h3>
                               <p className="text-gray-600 mb-4">{activity.desc}</p>
             
-                              <div className="flex justify-between items-center mt-4">
+            
+                              {/* <div className="flex justify-between items-center mt-4">
                                 <div className="flex gap-2">
                                   <Button
                                     variant={approvals[activity._id] === true ? "default" : "outline"}
@@ -134,7 +146,10 @@ function ReviewActitvity() {
                                   </Button>
                                 </div>
                                 <span className="text-xs text-gray-500">ID: {activity._id}</span>
-                              </div>
+                              </div> */}
+
+
+
                             </CardContent>
                           </Card>
                         </motion.div>

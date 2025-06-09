@@ -31,7 +31,7 @@ function page() {
   }
 
   const gotoabout = () => {
-    router.push('../../Components/About2');
+    router.push('../../Components/ParticipateInActivity');
   }
 
 
@@ -70,7 +70,7 @@ function page() {
               {[
                 { name: "Home", icon: Home , id : "Home"},
                 { name: "Add Activity", icon: Settings , id : "Add" },
-                { name: "About", icon: User , id : "About" },
+                { name: "Participate", icon: User , id : "About" },
                 { name: "Contact", icon: Bell },
               ].map((item, index) => (
                 <motion.div
