@@ -15,10 +15,7 @@ import Link from "next/link"
 import toast, { Toaster } from 'react-hot-toast';
 
 import { useRouter } from 'next/navigation';
-
-// import ""
-
-
+// import SignIn from "../../../Components/Auth/DistrictSignIn"
 
 const FloatingElement = ({
   children,
@@ -62,8 +59,8 @@ export default function SignUp() {
   const handleClick1 = () => {
     router.push('../../../Components/Auth/SignIn');
   };
-  const DistrictSignup = () => {
-    router.push('../.././../Components/Auth/DistricctSignUp');
+  const gotodistrictSignin = () => {
+    router.push('../../../Components/Auth/DistrictSignIn');
   };
 
   const postData = () => {
@@ -75,7 +72,7 @@ export default function SignUp() {
 
 
     console.log(formData.fullName , formData.email ,formData.password ,formData.confirmPassword);
-    fetch("http://localhost:5000/cabinate-signup" , {
+    fetch("http://localhost:5000/director-signup" , {
           method:"post",
           headers: {
               "Content-Type" : "application/json"
@@ -211,6 +208,7 @@ export default function SignUp() {
                 </motion.div>
               </motion.div>
               <CardTitle className="text-2xl font-bold text-gray-900">Join BOOSTUP</CardTitle>
+              <CardTitle className="text-2xl font-bold text-gray-900">Director login</CardTitle>
               <CardDescription className="text-gray-600">Create your account and start your journey</CardDescription>
             </CardHeader>
             <CardContent>
@@ -374,8 +372,7 @@ export default function SignUp() {
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
-                          className="flex items-center gap-2"
-                         
+                          className="flex items-center gap-2" 
                         >
                           Create Account
                           <ArrowRight className="w-4 h-4" />
@@ -396,8 +393,8 @@ export default function SignUp() {
                     <span onClick={() => {handleClick1()}} style={{cursor : 'pointer'}} className="text-blue-600 hover:text-blue-700 font-medium">
                       Sign in
                     </span>
-                    <p onClick={() => {DistrictSignup()}} style={{cursor : 'pointer'}} className="text-blue-600 hover:text-blue-700 font-medium">
-                      Director Signup
+                    <p onClick={() => {gotodistrictSignin()}} style={{cursor : 'pointer'}} className="text-blue-600 hover:text-blue-700 font-medium">
+                      Director Sign in
                     </p>
                   </p>
                 </motion.div>
