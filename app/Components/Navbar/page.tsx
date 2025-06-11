@@ -62,7 +62,7 @@ function page() {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span style={{cursor : "pointer"}} onClick={() => {gotohome()}} className="text-xl font-bold text-gray-800">BOOSTUP</span>
+              <span style={{cursor : "pointer"}} onClick={() => {gotohome()}} className="text-xl font-bold text-gray-800">HOBBIZZ</span>
             </motion.div>
 
             {/* Desktop Navigation */}
