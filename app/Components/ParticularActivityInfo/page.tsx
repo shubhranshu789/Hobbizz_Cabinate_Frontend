@@ -71,7 +71,7 @@ function page() {
 
       try {
         const token = localStorage.getItem("jwt");
-        const res = await fetch(`http://localhost:5000/has-uploaded/${id}`, {
+        const res = await fetch(`http://localhost:5000/has-uploaded-user/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -91,7 +91,7 @@ function page() {
     const fetchParticipants = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        const res = await fetch(`http://localhost:5000/event-participants/${id}`, {
+        const res = await fetch(`http://localhost:5000/event-participants-user/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -125,7 +125,7 @@ function page() {
 
   const registerForActivity = async (activityId: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/register-activity/${activityId}`, {
+      const response = await fetch(`http://localhost:5000/register-activity-user/${activityId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -150,7 +150,7 @@ function page() {
 
   const unregisterFromActivity = async (activityId: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/unregister-activity/${activityId}`, {
+      const response = await fetch(`http://localhost:5000/unregister-activity-user/${activityId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -204,7 +204,7 @@ function page() {
 
       if (result.url) {
         const token = localStorage.getItem("jwt");
-        const response = await fetch(`http://localhost:5000/upload-photo/${id}`, {
+        const response = await fetch(`http://localhost:5000/upload-photo-user/${id}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

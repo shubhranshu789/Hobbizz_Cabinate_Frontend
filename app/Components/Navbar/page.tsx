@@ -8,7 +8,7 @@ import Link from "next/link"
 
 import { useRouter } from 'next/navigation';
 
-
+// import "../../Components/CABINATE/JoinClub"
 
 
 
@@ -32,6 +32,11 @@ function page() {
 
   const gotoabout = () => {
     router.push('../../Components/ParticipateInActivity');
+  }
+  
+  const gotojoinclub = () =>{
+    router.push('../../Components/CABINATE/JoinClub');
+
   }
 
 
@@ -69,9 +74,9 @@ function page() {
             <div className="hidden md:flex items-center space-x-1">
               {[
                 { name: "Home", icon: Home , id : "Home"},
-                { name: "Add Activity", icon: Settings , id : "Add" },
+                // { name: "Add Activity", icon: Settings , id : "Add" },
                 { name: "Participate", icon: User , id : "About" },
-                { name: "Contact", icon: Bell },
+                { name: "Apply for Club", icon: Bell , id : "joinClub"},
               ].map((item, index) => (
                 <motion.div
                   key={item.name}
@@ -92,8 +97,8 @@ function page() {
                         if (item.id === "Home") {
                           gotohome();
                         }
-                        if (item.id === "About") {
-                          gotoabout();
+                        if (item.id === "joinClub") {
+                          gotojoinclub();
                         }
                       }}
                     >
