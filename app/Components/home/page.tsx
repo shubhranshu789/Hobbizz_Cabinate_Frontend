@@ -178,7 +178,7 @@ export default function Component() {
                 transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
                 className="bg-gradient-to-r from-white via-blue-100 to-white bg-[length:200%_100%] bg-clip-text text-transparent"
               >
-                BOOSTUP
+                HOBBIZZ
               </motion.span>
             </h2>
 
