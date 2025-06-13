@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, LogOut, Home, Settings, User, Bell, Search, Sparkles, Zap, Star } from "lucide-react"
+import { Menu, LogOut, Home, Settings, User, Bell, Locate, Search, Sparkles, Zap, Star } from "lucide-react"
 import Link from "next/link"
 
 import { useRouter } from 'next/navigation';
@@ -81,7 +81,7 @@ function page() {
                 // { name: "Add Activity", icon: Settings , id : "Add" },
                 { name: "Participate", icon: User , id : "About" },
                 { name: "Apply for Club", icon: Bell , id : "joinClub"},
-                { name: "Local Chapters", icon: Bell , id : "localChapter"},
+                { name: "Local Chapters", icon: Locate , id : "localChapter"},
               ].map((item, index) => (
                 <motion.div
                   key={item.name}
