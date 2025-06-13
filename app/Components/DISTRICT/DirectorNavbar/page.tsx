@@ -30,6 +30,9 @@ function page() {
     router.push('../../../Components/DISTRICT/DirectorDashboard');
   }
 
+  const manageDistrict = () => {
+    router.push('../../../Components/DISTRICT/Districts');
+  }
 //   const gotoabout = () => {
 //     // router.push('../../Components/ParticipateInActivity');
 //   }
@@ -72,6 +75,7 @@ function page() {
                 { name: "Add Activity", icon: Settings , id : "Add" },
                 // { name: "Participate", icon: User , id : "About" },
                 { name: "Contact", icon: Bell },
+                { name: "manage district", icon: Zap, id: "Manage" },
               ].map((item, index) => (
                 <motion.div
                   key={item.name}
@@ -94,6 +98,9 @@ function page() {
                         }
                         if (item.id === "About") {
                         //   gotoabout();
+                        }
+                        if (item.id === "Manage") {
+                           manageDistrict();
                         }
                       }}
                     >
