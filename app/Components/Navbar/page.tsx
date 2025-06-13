@@ -39,6 +39,10 @@ function page() {
 
   }
 
+  const gotolocalchapter = () => {
+    router.push('../../Components/DISTRICT/LocalChapters');
+  }
+
 
 
 
@@ -77,6 +81,7 @@ function page() {
                 // { name: "Add Activity", icon: Settings , id : "Add" },
                 { name: "Participate", icon: User , id : "About" },
                 { name: "Apply for Club", icon: Bell , id : "joinClub"},
+                { name: "Local Chapters", icon: Bell , id : "localChapter"},
               ].map((item, index) => (
                 <motion.div
                   key={item.name}
@@ -99,6 +104,9 @@ function page() {
                         }
                         if (item.id === "joinClub") {
                           gotojoinclub();
+                        }
+                        if (item.id === "localChapter") {
+                          gotolocalchapter();
                         }
                       }}
                     >
