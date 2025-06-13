@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, LogOut, Home, Settings, User, Bell, Search, Sparkles, Zap, Star } from "lucide-react"
 import Link from "next/link"
 
-import Navabr from "../Navbar/page"
+import Navbar from "../Navbar/page"
 import { useRouter } from 'next/navigation';
 
 
@@ -128,7 +128,7 @@ export default function Component() {
       />
 
       {/* Navigation */}
-      <Navabr />
+      <Navbar />
 
 
       {/* Main Content */}
