@@ -61,7 +61,7 @@ export default function DistrictPage() {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 10000) // 10s timeout
 
-      const response = await fetch(`${API_BASE_URL}/routes/districtinfo?name=${encodeURIComponent(name)}`, {
+      const response = await fetch(`${API_BASE_URL}/districtinfo?name=${encodeURIComponent(name)}`, {
         signal: controller.signal,
       })
 
@@ -197,7 +197,7 @@ export default function DistrictPage() {
                   <div>Total Members:</div>
                   <div className="font-semibold flex items-center">
                     <Users className="w-4 h-4 mr-1" />
-                    {currentDistrictState.data.totalMembers}
+                    {currentDistrictState.data.total_members}
                   </div>
 
                   <div>Students:</div>
@@ -206,10 +206,11 @@ export default function DistrictPage() {
                   <div>Teachers:</div>
                   <div className="font-semibold">{currentDistrictState.data.teachers}</div>
 
-                 
+                 <div>chapters :</div>
+                  <div className="font-semibold">{currentDistrictState.data.chapters}</div>
 
                   <div>Max Members:</div>
-                  <div className="font-semibold">{currentDistrictState.data.maxMembers}</div>
+                  <div className="font-semibold">{currentDistrictState.data.Max_members}</div>
                 </div>
 
                 <div className="flex gap-3 mt-6">
