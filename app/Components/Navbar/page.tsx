@@ -3,7 +3,8 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, LogOut, Home, Settings, User, Bell, Locate, Search, Sparkles, Zap, Star } from "lucide-react"
+import { Menu, LogOut, Settings, User, Bell, Locate, Search, Sparkles, Zap, Star } from "lucide-react"
+import { Home as HomeIcon } from "lucide-react"
 import Link from "next/link"
 
 import { useRouter } from 'next/navigation';
@@ -77,7 +78,7 @@ function page() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-1">
               {[
-                { name: "Home", icon: Home , id : "Home"},
+                { name: "Home", icon: HomeIcon , id : "Home"},
                 // { name: "Add Activity", icon: Settings , id : "Add" },
                 { name: "Participate", icon: User , id : "About" },
                 { name: "Apply for Club", icon: Bell , id : "joinClub"},
@@ -157,7 +158,7 @@ function page() {
               <SheetContent side="right" className="w-80">
                 <div className="flex flex-col space-y-4 mt-8">
                   {[
-                    { name: "Home", icon: Home },
+                    { name: "Home", icon: HomeIcon },
                     { name: "Services", icon: Settings },
                     { name: "About", icon: User },
                     { name: "Contact", icon: Bell },
