@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-
+import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Search, Users, Landmark, Loader2, AlertCircle } from "lucide-react"
 
@@ -34,6 +34,7 @@ export default function DistrictPage() {
   const [districtStates, setDistrictStates] = useState<Record<string, DistrictState>>({})
   const [dialogOpen, setDialogOpen] = useState(false)
 
+  const router = useRouter()
   // Ref to track active requests for cleanup
   const activeRequests = useRef<Set<string>>(new Set())
 
@@ -215,7 +216,12 @@ export default function DistrictPage() {
 
                 <div className="flex gap-3 mt-6">
                   <Button className="w-full">View Chapters</Button>
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full"
+                   onClick={() => {
+                      router.push(
+                        `../../../Components/DISTRICT/AssignHead?district=${encodeURIComponent(selectedDistrict)}`,
+                      )
+                    }} >
                     Assign Head
                   </Button>
                 </div>
