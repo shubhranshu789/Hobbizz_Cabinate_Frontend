@@ -22,25 +22,38 @@ export default function Component() {
     const gotoreviewactivity = () => {
       router.push('../../../Components/DISTRICT/ReviewActivity');
     };
+    const [currName, setCurrName] = useState('');
   
 
   const userData = localStorage.getItem('user');
 
-  let currName = '';
-
-  if (userData) {
-    try {
-      const parsedUser = JSON.parse(userData);
-      currName = parsedUser.name;
-      // console.log('User name:', currName);
-    } catch (error) {
-      console.error('Failed to parse user data:', error);
-    }
-  } else {
-    console.warn('No user found in localStorage');
-  }
+  // if (userData) {
+  //   try {
+  //     const parsedUser = JSON.parse(userData);
+  //     currName = parsedUser.name;
+  //     // console.log('User name:', currName);
+  //   } catch (error) {
+  //     console.error('Failed to parse user data:', error);
+  //   }
+  // } else {
+  //   console.warn('No user found in localStorage');
+  // }
 
   useEffect(() => {
+
+    const userData = localStorage.getItem('user');
+
+    if (userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        setCurrName(parsedUser.name);
+      } catch (error) {
+        console.error('Failed to parse user data:', error);
+      }
+    } else {
+      console.warn('No user found in localStorage');
+    }
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
     }

@@ -38,7 +38,7 @@ export default function DistrictPage() {
 
  const fetchDistrictData = async (name: string) => {
   try {
-    const response = await fetch(`http://localhost:5000/routes/districtinfo?name=${encodeURIComponent(name)}`);
+    const response = await fetch(`http://localhost:5000/districtinfo?name=${encodeURIComponent(name)}`);
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
