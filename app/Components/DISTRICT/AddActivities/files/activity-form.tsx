@@ -15,7 +15,6 @@ import { useRouter } from 'next/navigation';
 
 import Navbar from "../../DirectorNavbar/page"
 
-// import "../../../Components/home"
 
 export default function ActivityForm() {
    
@@ -25,7 +24,7 @@ export default function ActivityForm() {
       const router = useRouter();
     
       const gotohome = () => {
-        router.push('../../../Components/home');
+        router.push('../../../../Components/DISTRICT/DirectorDashboard');
       };
     
     

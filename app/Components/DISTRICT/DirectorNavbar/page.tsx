@@ -8,7 +8,7 @@ import Link from "next/link"
 
 import { useRouter } from 'next/navigation';
 
-// import "../../../Components/DISTRICT/AddActivities"
+// import "../../../Components/DISTRICT/ManageRoles"
 
 
 
@@ -32,6 +32,9 @@ function page() {
 
   const manageDistrict = () => {
     router.push('../../../Components/DISTRICT/Districts');
+  }
+  const manageRoles = () => {
+    router.push('../../../Components/DISTRICT/ManageRoles');
   }
 //   const gotoabout = () => {
 //     // router.push('../../Components/ParticipateInActivity');
@@ -76,6 +79,7 @@ function page() {
                 // { name: "Participate", icon: User , id : "About" },
                 { name: "Contact", icon: Bell },
                 { name: "manage district", icon: Zap, id: "Manage" },
+                { name: "Manage Role", icon: Zap, id: "ManageRole" },
               ].map((item, index) => (
                 <motion.div
                   key={item.name}
@@ -101,6 +105,9 @@ function page() {
                         }
                         if (item.id === "Manage") {
                            manageDistrict();
+                        }
+                        if (item.id === "ManageRole") {
+                           manageRoles();
                         }
                       }}
                     >

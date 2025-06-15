@@ -11,6 +11,8 @@ import { useRouter } from 'next/navigation';
 
 // import "../../Components/CABINATE/JoinClub"
 
+// import "../../Components/Auth/SignIn"
+
 
 
 function page() {
@@ -50,8 +52,8 @@ function page() {
 
 
   const logout = () => {
+    router.push('/Components/Auth/SignIn');
     localStorage.clear()
-    router.push('../../Components/Auth/SignIn');
     // window.location.reload();
   }
 

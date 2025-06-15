@@ -38,7 +38,13 @@ export default function DistrictPage() {
   // Ref to track active requests for cleanup
   const activeRequests = useRef<Set<string>>(new Set())
 
+<<<<<<< HEAD
   const filteredDistricts = districts.filter((district) => district.toLowerCase().includes(searchTerm.toLowerCase()))
+=======
+ const fetchDistrictData = async (name: string) => {
+  try {
+    const response = await fetch(`http://localhost:5000/districtinfo?name=${encodeURIComponent(name)}`);
+>>>>>>> 1bc1fcf381c171e379a8a2c3f5d436f390f982d5
 
   const fetchDistrictData = useCallback(async (name: string) => {
     // Cancel if request is already in progress
