@@ -22,19 +22,19 @@ function page() {
   // };
 
   const gotoAddActivity = () => {
-    router.push('../../../Components/DISTRICT/AddActivities');
+    router.push('/Components/DISTRICT/AddActivities');
   }
 
 
   const gotohome = () => {
-    router.push('../../../Components/DISTRICT/DirectorDashboard');
+    router.push('/Components/DISTRICT/DirectorDashboard');
   }
 
   const manageDistrict = () => {
-    router.push('../../../Components/DISTRICT/Districts');
+    router.push('/Components/DISTRICT/Districts');
   }
   const manageRoles = () => {
-    router.push('../../../Components/DISTRICT/ManageRoles');
+    router.push('/Components/DISTRICT/ManageRoles');
   }
 //   const gotoabout = () => {
 //     // router.push('../../Components/ParticipateInActivity');
