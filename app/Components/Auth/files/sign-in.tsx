@@ -15,6 +15,8 @@ import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 
 
+// import "../../../Components/Auth/SignUp"
+
 
 
 const FloatingElement = ({
@@ -52,7 +54,7 @@ export default function SignIn() {
   const router = useRouter();
 
   const handleClick1 = () => {
-    router.push('./SignUp');
+    router.push('/Components/Auth/SignUp');
   };
 
 

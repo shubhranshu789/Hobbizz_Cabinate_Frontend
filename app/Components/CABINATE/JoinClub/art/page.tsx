@@ -87,26 +87,30 @@ export default function ArtClubPage() {
     checkRequestStatus()
 
     const fetchClubStatus = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/artclub/status", {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("jwt"),
-          },
-        });
-        const data = await res.json();
+  try {
+    const res = await fetch("http://localhost:5000/artclub/status", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+    });
+    const data = await res.json();
 
-        const user = JSON.parse(localStorage.getItem("user") || "{}");
-        const userId = user._id;
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const userId = user._id;
 
-        if (data.members.includes(userId)) {
-          setIsMember(true);
-        } else if (data.memberRequests.includes(userId)) {
-          setHasRequested(true);
-        }
-      } catch (err) {
-        console.error("Failed to fetch club status", err);
-      }
-    };
+    const memberIds = data.members.map((member: { _id: any }) => member._id);
+    const memberRequestIds = data.memberRequests.map((req: { _id: any }) => req._id);
+
+    if (memberIds.includes(userId)) {
+      setIsMember(true);
+    } else if (memberRequestIds.includes(userId)) {
+      setHasRequested(true);
+    }
+  } catch (err) {
+    console.error("Failed to fetch club status", err);
+  }
+};
+
 
     fetchClubStatus();
   }, [])

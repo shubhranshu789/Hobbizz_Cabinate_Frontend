@@ -25,25 +25,25 @@ function page() {
   // };
 
   const gotoAddActivity = () => {
-    router.push('../../Components/AddActivities');
+    router.push('/Components/AddActivities');
   }
 
 
   const gotohome = () => {
-    router.push('../../Components/home');
+    router.push('/Components/home');
   }
 
   const gotoabout = () => {
-    router.push('../../Components/ParticipateInActivity');
+    router.push('/Components/ParticipateInActivity');
   }
   
   const gotojoinclub = () =>{
-    router.push('../../Components/CABINATE/JoinClub');
+    router.push('/Components/CABINATE/JoinClub');
 
   }
 
   const gotolocalchapter = () => {
-    router.push('../../Components/DISTRICT/LocalChapters');
+    router.push('/Components/DISTRICT/LocalChapters');
   }
 
 
