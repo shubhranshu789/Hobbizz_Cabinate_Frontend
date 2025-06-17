@@ -6,19 +6,44 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Search, Users, Landmark, Loader2, AlertCircle } from "lucide-react"
+import { Search, Users, Landmark, Loader2, AlertCircle, Activity, Clock, FileText } from "lucide-react"
 
-interface DistrictInfo {
-  name: string
-  totalMembers: number
-  students: number
-  teachers: number
-
-  maxMembers: number
+interface ClubDistrictInfo {
+  district: string
+  activities: Array<{
+    _id: string
+    name?: string
+    description?: string
+    date?: string
+  }>
+  members: Array<{
+    _id: string
+    name?: string
+    role?: string
+    email?: string
+  }>
+  memberRequests: Array<{
+    _id: string
+    name?: string
+    email?: string
+    status?: string
+  }>
+  pendingRequests: Array<{
+    _id: string
+    name?: string
+    email?: string
+    requestDate?: string
+  }>
 }
 
 interface DistrictState {
-  data: DistrictInfo | null
+  data: ClubDistrictInfo | null
+  loading: boolean
+  error: string | null
+}
+
+interface UserInfo {
+  clubName: string | null
   loading: boolean
   error: string | null
 }
@@ -33,6 +58,11 @@ export default function DistrictPage() {
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null)
   const [districtStates, setDistrictStates] = useState<Record<string, DistrictState>>({})
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [userInfo, setUserInfo] = useState<UserInfo>({
+    clubName: process.env.NEXT_PUBLIC_DEFAULT_CLUB || "rotaract",
+    loading: false,
+    error: null,
+  })
 
   const router = useRouter()
   // Ref to track active requests for cleanup
@@ -40,77 +70,96 @@ export default function DistrictPage() {
 
   const filteredDistricts = districts.filter((district) => district.toLowerCase().includes(searchTerm.toLowerCase()))
 
-  const fetchDistrictData = useCallback(async (name: string) => {
-    // Cancel if request is already in progress
-    if (activeRequests.current.has(name)) {
-      return
-    }
-
-    activeRequests.current.add(name)
-
-    // Set loading state
-    setDistrictStates((prev) => ({
-      ...prev,
-      [name]: {
-        data: prev[name]?.data || null,
-        loading: true,
-        error: null,
-      },
-    }))
-
-    try {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10s timeout
-
-      const response = await fetch(`${API_BASE_URL}/districtinfo?name=${encodeURIComponent(name)}`, {
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeoutId)
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`)
-      }
-
-      const data = await response.json()
-
-      // Validate response data
-      if (!data || typeof data !== "object") {
-        throw new Error("Invalid response format")
-      }
-
-      setDistrictStates((prev) => ({
-        ...prev,
-        [name]: {
-          data: data,
-          loading: false,
-          error: null,
-        },
-      }))
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
-        console.log("Request aborted for:", name)
+  const fetchDistrictData = useCallback(
+    async (districtName: string) => {
+      if (!userInfo.clubName) {
+        console.error("Club name not available")
         return
       }
 
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred"
-      console.error("Error fetching district data:", error)
+      // Cancel if request is already in progress
+      if (activeRequests.current.has(districtName)) {
+        return
+      }
 
+      activeRequests.current.add(districtName)
+
+      // Set loading state
       setDistrictStates((prev) => ({
         ...prev,
-        [name]: {
-          data: prev[name]?.data || null,
-          loading: false,
-          error: errorMessage,
+        [districtName]: {
+          data: prev[districtName]?.data || null,
+          loading: true,
+          error: null,
         },
       }))
-    } finally {
-      activeRequests.current.delete(name)
-    }
-  }, [])
+
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 10000) // 10s timeout
+
+        const response = await fetch(
+          `${API_BASE_URL}/${userInfo.clubName}/info?district=${encodeURIComponent(districtName)}`,
+          {
+            signal: controller.signal,
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          },
+        )
+
+        clearTimeout(timeoutId)
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`)
+        }
+
+        const data = await response.json()
+
+        // Validate response data
+        if (!data || typeof data !== "object") {
+          throw new Error("Invalid response format")
+        }
+
+        setDistrictStates((prev) => ({
+          ...prev,
+          [districtName]: {
+            data: data,
+            loading: false,
+            error: null,
+          },
+        }))
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          console.log("Request aborted for:", districtName)
+          return
+        }
+
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred"
+        console.error("Error fetching district data:", error)
+
+        setDistrictStates((prev) => ({
+          ...prev,
+          [districtName]: {
+            data: prev[districtName]?.data || null,
+            loading: false,
+            error: errorMessage,
+          },
+        }))
+      } finally {
+        activeRequests.current.delete(districtName)
+      }
+    },
+    [userInfo.clubName],
+  )
 
   const handleDistrictClick = useCallback(
     (district: string) => {
+      if (!userInfo.clubName) {
+        console.error("Club name not available")
+        return
+      }
+
       setSelectedDistrict(district)
       setDialogOpen(true)
 
@@ -120,7 +169,7 @@ export default function DistrictPage() {
         fetchDistrictData(district)
       }
     },
-    [districtStates, fetchDistrictData],
+    [districtStates, fetchDistrictData, userInfo.clubName],
   )
 
   const handleDialogClose = useCallback(() => {
@@ -149,6 +198,11 @@ export default function DistrictPage() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">District Directory</h1>
+          {userInfo.clubName && (
+            <p className="text-blue-100 mb-4">
+              Club: <span className="font-semibold">{userInfo.clubName}</span>
+            </p>
+          )}
           <div className="flex justify-center items-center gap-2">
             <Search className="text-white" />
             <Input
@@ -176,11 +230,12 @@ export default function DistrictPage() {
         </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold text-blue-700 text-center">
                 {selectedDistrict || "District Details"}
               </DialogTitle>
+              {userInfo.clubName && <p className="text-center text-gray-600">Club: {userInfo.clubName}</p>}
             </DialogHeader>
 
             {currentDistrictState?.loading && (
@@ -190,38 +245,58 @@ export default function DistrictPage() {
               </div>
             )}
 
-         
+           
 
             {currentDistrictState?.data && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
-                  <div>Total Members:</div>
-                  <div className="font-semibold flex items-center">
-                    <Users className="w-4 h-4 mr-1" />
-                    {currentDistrictState.data.total_members}
+              <div className="space-y-6">
+                {/* Summary Cards - Only showing counts */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-blue-50 p-6 rounded-lg text-center hover:bg-blue-100 transition-colors">
+                    <Users className="w-8 h-8 mx-auto mb-3 text-blue-600" />
+                    <div className="text-3xl font-bold text-blue-700 mb-1">
+                      {currentDistrictState.data.members.length}
+                    </div>
+                    <div className="text-sm text-gray-600 font-medium">Total Members</div>
                   </div>
 
-                  <div>Students:</div>
-                  <div className="font-semibold">{currentDistrictState.data.students}</div>
+                  <div className="bg-green-50 p-6 rounded-lg text-center hover:bg-green-100 transition-colors">
+                    <Activity className="w-8 h-8 mx-auto mb-3 text-green-600" />
+                    <div className="text-3xl font-bold text-green-700 mb-1">
+                      {currentDistrictState.data.activities.length}
+                    </div>
+                    <div className="text-sm text-gray-600 font-medium">Activities</div>
+                  </div>
 
-                  <div>Teachers:</div>
-                  <div className="font-semibold">{currentDistrictState.data.teachers}</div>
+                  <div className="bg-yellow-50 p-6 rounded-lg text-center hover:bg-yellow-100 transition-colors">
+                    <Clock className="w-8 h-8 mx-auto mb-3 text-yellow-600" />
+                    <div className="text-3xl font-bold text-yellow-700 mb-1">
+                      {currentDistrictState.data.pendingRequests.length}
+                    </div>
+                    <div className="text-sm text-gray-600 font-medium">Pending Requests</div>
+                  </div>
 
-                 <div>chapters :</div>
-                  <div className="font-semibold">{currentDistrictState.data.chapters}</div>
-
-                  <div>Max Members:</div>
-                  <div className="font-semibold">{currentDistrictState.data.Max_members}</div>
+                  <div className="bg-purple-50 p-6 rounded-lg text-center hover:bg-purple-100 transition-colors">
+                    <FileText className="w-8 h-8 mx-auto mb-3 text-purple-600" />
+                    <div className="text-3xl font-bold text-purple-700 mb-1">
+                      {currentDistrictState.data.memberRequests.length}
+                    </div>
+                    <div className="text-sm text-gray-600 font-medium">Member Requests</div>
+                  </div>
                 </div>
 
-                <div className="flex gap-3 mt-6">
-                  <Button className="w-full">View Chapters</Button>
-                  <Button variant="outline" className="w-full"
-                   onClick={() => {
-                      router.push(
-                        `../../../Components/DISTRICT/AssignHead?district=${encodeURIComponent(selectedDistrict)}`,
-                      )
-                    }} >
+                {/* Action Buttons */}
+                <div className="flex gap-3 mt-8">
+                  <Button className="w-full" size="lg">
+                    View Details
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    size="lg"
+                    onClick={() => {
+                      router.push(`/assign-head?district=${encodeURIComponent(selectedDistrict)}`)
+                    }}
+                  >
                     Assign Head
                   </Button>
                 </div>
@@ -229,7 +304,11 @@ export default function DistrictPage() {
             )}
 
             {!currentDistrictState && selectedDistrict && (
-              <div className="text-center py-4">
+              <div className="text-center py-8">
+                <div className="mb-4">
+                  <Landmark className="w-12 h-12 mx-auto text-gray-400 mb-2" />
+                  <p className="text-gray-600">No data loaded for this district</p>
+                </div>
                 <Button onClick={() => fetchDistrictData(selectedDistrict)}>Load District Data</Button>
               </div>
             )}
