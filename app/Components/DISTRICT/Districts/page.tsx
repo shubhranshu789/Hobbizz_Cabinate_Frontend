@@ -10,30 +10,13 @@ import { Search, Users, Landmark, Loader2, AlertCircle, Activity, Clock, FileTex
 
 interface ClubDistrictInfo {
   district: string
-  activities: Array<{
-    _id: string
-    name?: string
-    description?: string
-    date?: string
-  }>
-  members: Array<{
-    _id: string
-    name?: string
-    role?: string
-    email?: string
-  }>
-  memberRequests: Array<{
-    _id: string
-    name?: string
-    email?: string
-    status?: string
-  }>
-  pendingRequests: Array<{
-    _id: string
-    name?: string
-    email?: string
-    requestDate?: string
-  }>
+  totalActivities: Number
+  totalMembers: Number
+  memberRequests: Number
+  pendingRequests: Number
+}
+interface Number {
+  length: number
 }
 
 interface DistrictState {
@@ -55,11 +38,11 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
 
 export default function DistrictPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null)
+  const [selectedDistrict, setSelectedDistrict] = useState<string>(" ")
   const [districtStates, setDistrictStates] = useState<Record<string, DistrictState>>({})
   const [dialogOpen, setDialogOpen] = useState(false)
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    clubName: process.env.NEXT_PUBLIC_DEFAULT_CLUB || "rotaract",
+    clubName: "artclub",
     loading: false,
     error: null,
   })
@@ -175,7 +158,7 @@ export default function DistrictPage() {
   const handleDialogClose = useCallback(() => {
     setDialogOpen(false)
     // Don't clear selectedDistrict immediately to avoid flash
-    setTimeout(() => setSelectedDistrict(null), 150)
+    setTimeout(() => setSelectedDistrict(""), 150)
   }, [])
 
   const retryFetch = useCallback(() => {
@@ -254,7 +237,7 @@ export default function DistrictPage() {
                   <div className="bg-blue-50 p-6 rounded-lg text-center hover:bg-blue-100 transition-colors">
                     <Users className="w-8 h-8 mx-auto mb-3 text-blue-600" />
                     <div className="text-3xl font-bold text-blue-700 mb-1">
-                      {currentDistrictState.data.members.length}
+                      {currentDistrictState.data.totalMembers.length}
                     </div>
                     <div className="text-sm text-gray-600 font-medium">Total Members</div>
                   </div>
@@ -262,7 +245,7 @@ export default function DistrictPage() {
                   <div className="bg-green-50 p-6 rounded-lg text-center hover:bg-green-100 transition-colors">
                     <Activity className="w-8 h-8 mx-auto mb-3 text-green-600" />
                     <div className="text-3xl font-bold text-green-700 mb-1">
-                      {currentDistrictState.data.activities.length}
+                      {currentDistrictState.data.totalActivities.length}
                     </div>
                     <div className="text-sm text-gray-600 font-medium">Activities</div>
                   </div>
