@@ -10,7 +10,10 @@ import { useRouter } from 'next/navigation';
 
 // import "../../Components/CABINATE/JoinClub"
 
-// import "../../Components/Auth/SignIn"
+// import "../../Components/CABINATE/HandleWork"
+
+
+
 
 
 
@@ -81,7 +84,7 @@ function page() {
               {[
                 { name: "Home", icon: Home , id : "Home"},
                 // { name: "Add Activity", icon: Settings , id : "Add" },
-                { name: "Participate", icon: User , id : "About" },
+                { name: "Manage Council", icon: User , id : "Work" },
                 { name: "Apply for Club", icon: Bell , id : "joinClub"},
                 { name: "Local Chapters", icon: Locate , id : "localChapter"},
               ].map((item, index) => (
@@ -109,6 +112,9 @@ function page() {
                         }
                         if (item.id === "localChapter") {
                           gotolocalchapter();
+                        }
+                        if (item.id === "Work") {
+                          router.push("/Components/CABINATE/ManageCouncil");
                         }
                       }}
                     >

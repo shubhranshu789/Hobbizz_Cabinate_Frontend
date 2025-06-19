@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Sparkles, Zap, Star, Heart, Rocket, MapPin, Building, GraduationCap } from "lucide-react"
+import { Palette, Eye, EyeOff, Mail, Lock, User, ArrowRight, Sparkles, Zap, Star, Heart, Rocket, MapPin, Building, GraduationCap } from "lucide-react"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 // import { User, Mail, Lock, Eye, EyeOff, MapPin, Building, GraduationCap } from "lucide-react"
@@ -485,6 +485,7 @@ export default function SignUp() {
     state: "",
     district: "",
     school: "",
+    clubName: ""
   })
 
   const [ip, setIp] = useState("")
@@ -543,6 +544,7 @@ export default function SignUp() {
       formData.state,
       formData.district,
       formData.school,
+      formData.clubName,
     )
 
     try {
@@ -558,6 +560,7 @@ export default function SignUp() {
           ip: ip,
           state: formData.state,
           district: formData.district,
+          clubName: formData.clubName.toUpperCase()
           // school: formData.school,
         }),
       })
@@ -582,6 +585,11 @@ export default function SignUp() {
       setIsLoading(false)
     }
   }
+
+
+  const handleCategoryChange = (value: any) => {
+  setFormData((prev) => ({ ...prev, clubName: value }));
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -687,7 +695,7 @@ export default function SignUp() {
               <CardDescription className="text-gray-600">Create your account and start your journey</CardDescription>
             </CardHeader>
             <CardContent>
-              <div  className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+              <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
                 <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
                   <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Create Account</h1>
 
@@ -771,6 +779,7 @@ export default function SignUp() {
                       </div>
                     </motion.div>
 
+
                     {/* Confirm Password */}
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
@@ -801,6 +810,45 @@ export default function SignUp() {
                         </button>
                       </div>
                     </motion.div>
+
+
+
+
+                    {/* Club Name  */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="space-y-2"
+                    >
+                      <Label htmlFor="clubname" className="text-sm font-medium text-gray-700">
+                        Club Name
+                      </Label>
+                      <div className="relative">
+                        <Palette className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Select value={formData.clubName} onValueChange={handleCategoryChange}>
+                          <SelectTrigger className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {["Art", "Photography", "Dance"].map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                      </div>
+                    </motion.div>
+
+
+
+
+
+
+
+
 
                     {/* State */}
                     <motion.div
@@ -856,7 +904,7 @@ export default function SignUp() {
                       </div>
                     </motion.div>
 
-                 
+
 
                     {/* Terms and Conditions */}
                     {/* <motion.div
