@@ -139,6 +139,34 @@ export default function ArtClubPage() {
     }
   }
 
+
+
+  const handleJoinRequestCouncil = async () => {
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("http://localhost:5000/artclub/requestjoinforcouncil", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("jwt")
+        },
+      })
+      const data = await response.json()
+
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      setHasRequested(true)
+      localStorage.setItem("artClubRequested", "true")
+      console.log("Request send for council");
+      
+    } catch (error) {
+      console.error("Failed to request join:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleWithdrawRequest = async () => {
     setIsLoading(true)
 
@@ -408,6 +436,19 @@ export default function ArtClubPage() {
                       {isLoading ? "Processing..." : "Request to Join"}
                     </Button>
                   )}
+
+
+                  <div>
+                    <Button onClick={() => {handleJoinRequestCouncil()}} className="mt-4 w-full">
+                      Apply For Council
+                    </Button>
+                  </div>
+
+                  <div>
+                    <Button className="mt-4 w-full">
+                      Apply For Editor
+                    </Button>
+                  </div>
 
                   <div className="mt-6 border-t pt-4">
                     <h4 className="font-medium">Club Details</h4>
