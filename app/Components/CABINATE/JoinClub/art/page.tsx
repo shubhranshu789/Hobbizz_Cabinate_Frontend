@@ -80,7 +80,7 @@ export default function ArtClubPage() {
   useEffect(() => {
     const checkRequestStatus = async () => {
       setTimeout(() => {
-        setHasRequested(localStorage.getItem("artClubRequested") === "true")
+        setHasRequested(localStorage.getItem("artClubRequested") === "false")
       }, 500)
     }
 

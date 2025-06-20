@@ -22,7 +22,7 @@ function Navbar() {
 
       // If user has a club assigned
       if (parsedUser.club) {
-        fetch(`http://localhost:5000/artclub/info?district=${parsedUser.district}`)
+        fetch(`http://localhost:5000/${parsedUser.club}/gethead?district=${parsedUser.district}`)
           .then(res => res.json())
           .then(data => {
             // If there's a head set in club and compare with logged-in user id
