@@ -3,21 +3,13 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, LogOut, Settings, User, Bell, Locate, Search, Sparkles, Zap, Star } from "lucide-react"
-import { Home as HomeIcon } from "lucide-react"
-import Link from "next/link"
-
+import { Menu, LogOut, User, Bell, Locate, Search, Sparkles, Home as HomeIcon, Settings, Star } from "lucide-react"
 import { useRouter } from 'next/navigation';
 
-// import "../../Components/CABINATE/JoinClub"
-
-// import "../../Components/Auth/SignIn"
-
-
-
-function page() {
-  const [isScrolled, setIsScrolled] = useState(false)
-
+function Navbar() {
+  const [user, setUser] = useState(null)
+  const [clubHead, setClubHead] = useState(null)
+  const [navType, setNavType] = useState("default") // 'default' | 'head' | 'member'
   const router = useRouter();
 
   // const handleClick1 = () => {
@@ -42,9 +34,9 @@ function page() {
 
   }
 
-  // const gotolocalchapter = () => {
-  //   router.push('/Components/DISTRICT/LocalChapters');
-  // }
+  const gotolocalchapter = () => {
+    router.push('/Components/DISTRICT/LocalChapters');
+  }
 
 
 
@@ -52,29 +44,48 @@ function page() {
 
 
   const logout = () => {
-    router.push('/Components/Auth/SignIn');
+    router.push('/Components/Auth/SignIn')
     localStorage.clear()
-    // window.location.reload();
   }
 
+  const navOptions = {
+    default: [
+      { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
+      { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
+      { name: "Participate", icon: User, action: () => router.push('/Components/ParticipateInActivity') },
+      { name: "Apply for Club", icon: Bell, action: () => router.push('/Components/CABINATE/JoinClub') },
+    ],
+    head: [
+      { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
+      { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
+      { name: "Manage Council", icon: Settings, action: () => router.push('/Components/CABINATE/ManageCouncil') },
+      { name: "Manage Roles", icon: Star, action: () => router.push('/Components/CABINATE/ManageRoles') },
+    ],
+    member: [
+      { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
+      { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
+      { name: "Club Info", icon: Sparkles, action: () => router.push('/Components/CABINATE/ClubInfo') },
+    ],
+  }
 
+  const currentNavItems = navOptions[navType]
 
   return (
     <div>
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-md shadow-lg" : "bg-white/90 backdrop-blur-sm"
-          }`}
+        className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-md"
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
+
             {/* Logo */}
             <motion.div whileHover={{ scale: 1.05 }} className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span style={{cursor : "pointer"}} onClick={() => {gotohome()}} className="text-xl font-bold text-gray-800">HOBBIZZ</span>
+              <span onClick={() => router.push('/Components/home')} className="text-xl font-bold text-gray-800 cursor-pointer">HOBBIZZ</span>
             </motion.div>
 
             {/* Desktop Navigation */}
@@ -84,7 +95,7 @@ function page() {
                 // { name: "Add Activity", icon: Settings , id : "Add" },
                 { name: "Participate", icon: User , id : "About" },
                 { name: "Apply for Club", icon: Bell , id : "joinClub"},
-                // { name: "Local Chapters", icon: Locate , id : "localChapter"},
+                { name: "Local Chapters", icon: Locate , id : "localChapter"},
               ].map((item, index) => (
                 <motion.div
                   key={item.name}
@@ -108,9 +119,9 @@ function page() {
                         if (item.id === "joinClub") {
                           gotojoinclub();
                         }
-                        // if (item.id === "localChapter") {
-                        //   gotolocalchapter();
-                        // }
+                        if (item.id === "localChapter") {
+                          gotolocalchapter();
+                        }
                       }}
                     >
                       <item.icon className="w-4 h-4" />
@@ -123,31 +134,20 @@ function page() {
 
             {/* Action Buttons */}
             <div className="hidden md:flex items-center space-x-2">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" size="icon" className="text-gray-700 hover:text-blue-600">
-                  <Search className="w-4 h-4" />
-                </Button>
-              </motion.div>
-
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" size="icon" className="text-gray-700 hover:text-blue-600">
-                  <Bell className="w-4 h-4" />
-                </Button>
-              </motion.div>
-
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
-                  <User className="w-4 h-4 mr-2" />
-                  Profile
-                </Button>
-              </motion.div>
-
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button onClick={() => { logout() }} className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600">
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
-                </Button>
-              </motion.div>
+              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-blue-600">
+                <Search className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-blue-600">
+                <Bell className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
+                <User className="w-4 h-4 mr-2" />
+                Profile
+              </Button>
+              <Button onClick={logout} className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600">
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
             </div>
 
             {/* Mobile Menu */}
@@ -159,17 +159,10 @@ function page() {
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
                 <div className="flex flex-col space-y-4 mt-8">
-                  {[
-                    { name: "Home", icon: HomeIcon },
-                    { name: "Services", icon: Settings },
-                    { name: "About", icon: User },
-                    { name: "Contact", icon: Bell },
-                  ].map((item) => (
-                    <Button key={item.name} variant="ghost" className="justify-start text-left" asChild>
-                      <Link href="#" className="flex items-center space-x-3">
-                        <item.icon className="w-5 h-5" />
-                        <span>{item.name}</span>
-                      </Link>
+                  {currentNavItems.map((item) => (
+                    <Button key={item.name} variant="ghost" className="justify-start text-left" onClick={item.action}>
+                      <item.icon className="w-5 h-5 mr-2" />
+                      {item.name}
                     </Button>
                   ))}
 
@@ -178,7 +171,7 @@ function page() {
                       <User className="w-4 h-4 mr-2" />
                       Profile
                     </Button>
-                    <Button onClick={() => { logout() }} className="w-full justify-start bg-gradient-to-r from-blue-600 to-blue-500">
+                    <Button onClick={logout} className="w-full justify-start bg-gradient-to-r from-blue-600 to-blue-500">
                       <LogOut className="w-4 h-4 mr-2" />
                       Logout
                     </Button>
@@ -186,6 +179,7 @@ function page() {
                 </div>
               </SheetContent>
             </Sheet>
+
           </div>
         </div>
       </motion.nav>
@@ -193,4 +187,4 @@ function page() {
   )
 }
 
-export default page
+export default Navbar;

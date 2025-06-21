@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator"
 import { Check, X, Mail, Clock, AlertCircle } from "lucide-react"
 import { toast } from "sonner"
 
-import Navbar from "../DirectorNavbar/page"
+import Navbar from "../../Navbar/page"
 
 // interface MemberRequest {
 //   _id: string
@@ -52,7 +52,7 @@ export default function MemberRequests() {
   useEffect(() => {
     const fetchMemberRequests = async () => {
       try {
-        const response = await fetch("http://localhost:5000/artclub/member-requests", {
+        const response = await fetch("http://localhost:5000/artclub/member-requests-council", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -83,7 +83,7 @@ export default function MemberRequests() {
     setProcessingIds((prev) => new Set(prev).add(userId));
 
     try {
-      const response = await fetch(`http://localhost:5000/artclub/approve/${userId}`, {
+      const response = await fetch(`http://localhost:5000/artclub/approve-council/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -117,7 +117,7 @@ export default function MemberRequests() {
     setProcessingIds((prev) => new Set(prev).add(userId))
 
     try {
-      const response = await fetch(`http://localhost:5000/artclub/disapprove/${userId}`, {
+      const response = await fetch(`http://localhost:5000/artclub/disapprove-council/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

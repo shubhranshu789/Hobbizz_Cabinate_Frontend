@@ -25,7 +25,7 @@ export default function Component() {
     const [currName, setCurrName] = useState('');
   
 
-  const userData = localStorage.getItem('user');
+  // const userData = localStorage.getItem('user');
 
   // if (userData) {
   //   try {
