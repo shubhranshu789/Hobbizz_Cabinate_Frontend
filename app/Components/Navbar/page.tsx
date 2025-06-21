@@ -12,36 +12,36 @@ function Navbar() {
   const [navType, setNavType] = useState("default") // 'default' | 'head' | 'member'
   const router = useRouter();
 
-  // const handleClick1 = () => {
-  //   router.push('./SignUp');
-  // };
 
-  const gotoAddActivity = () => {
-    router.push('/Components/AddActivities');
-  }
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user")
+    const token = localStorage.getItem("jwt")
 
+    if (storedUser && token) {
+      const parsedUser = JSON.parse(storedUser)
+      setUser(parsedUser)
 
-  const gotohome = () => {
-    router.push('/Components/home');
-  }
-
-  const gotoabout = () => {
-    router.push('/Components/ParticipateInActivity');
-  }
-  
-  const gotojoinclub = () =>{
-    router.push('/Components/CABINATE/JoinClub');
-
-  }
-
-  const gotolocalchapter = () => {
-    router.push('/Components/DISTRICT/LocalChapters');
-  }
-
-
-
-
-
+      // If user has a club assigned
+      if (parsedUser.club) {
+        fetch(`http://localhost:5000/${parsedUser.club}/gethead?district=${parsedUser.district}`)
+          .then(res => res.json())
+          .then(data => {
+            // If there's a head set in club and compare with logged-in user id
+            if (data.head && data.head._id === parsedUser._id) {
+              setNavType("head")
+            } else {
+              setNavType("member")
+            }
+          })
+          .catch(err => {
+            console.error("Failed to fetch club info", err)
+            setNavType("default")
+          })
+      } else {
+        setNavType("default")
+      }
+    }
+  }, [])
 
   const logout = () => {
     router.push('/Components/Auth/SignIn')
@@ -58,10 +58,10 @@ function Navbar() {
     head: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
       { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
-      { name: "Manage Council", icon: Settings, action: () => router.push('/Components/CABINATE/ManageCouncil') },
+      { name: "Manage Council", icon: Settings, action: () => router.push(`/Components/DISTRICT/ManageCouncil`) },
       { name: "Manage Roles", icon: Star, action: () => router.push('/Components/CABINATE/ManageRoles') },
     ],
-    member: [
+    council: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
       { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
       { name: "Club Info", icon: Sparkles, action: () => router.push('/Components/CABINATE/ClubInfo') },
