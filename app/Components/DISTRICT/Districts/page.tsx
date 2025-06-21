@@ -8,6 +8,9 @@ import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Search, Users, Landmark, Loader2, AlertCircle, Activity, Clock, FileText } from "lucide-react"
 
+import Navbar from "../DirectorNavbar/page"
+
+
 interface ClubDistrictInfo {
   district: string
   totalActivities: Number

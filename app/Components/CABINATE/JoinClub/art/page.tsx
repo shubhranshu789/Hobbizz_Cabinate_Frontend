@@ -68,6 +68,9 @@ const members = [
   { id: 5, name: "Olivia Patel", role: "Event Coordinator", avatar: "/placeholder.svg?height=40&width=40" },
 
 ]
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+const userId = user._id;
+const district= user.district;
 
 export default function ArtClubPage() {
   const [hasRequested, setHasRequested] = useState(false)
@@ -95,8 +98,6 @@ export default function ArtClubPage() {
     });
     const data = await res.json();
 
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const userId = user._id;
 
     const memberIds = data.members.map((member: { _id: any }) => member._id);
     const memberRequestIds = data.memberRequests.map((req: { _id: any }) => req._id);
@@ -119,7 +120,7 @@ export default function ArtClubPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch("http://localhost:5000/artclub/requestjoin", {
+      const response = await fetch(`http://localhost:5000/artclub/requestjoin?district=${encodeURIComponent(district)}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -145,7 +146,7 @@ export default function ArtClubPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch("http://localhost:5000/artclub/requestjoinforcouncil", {
+      const response = await fetch(`http://localhost:5000/artclub/requestjoinforcouncil?district=${encodeURIComponent(district)}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

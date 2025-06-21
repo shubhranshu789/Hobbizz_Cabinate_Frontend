@@ -9,8 +9,7 @@ import { Separator } from "@/components/ui/separator"
 import { Check, X, Mail, Clock, AlertCircle } from "lucide-react"
 import { toast } from "sonner"
 
-import Navbar from "../DirectorNavbar/page"
-import { useSearchParams } from "next/navigation"
+import Navbar from "../../Navbar/page"
 
 // interface MemberRequest {
 //   _id: string
@@ -35,14 +34,12 @@ interface ArtClub {
 }
 
 export default function MemberRequests() {
-  const [clubName, setClub] = useState<string | null>(null);
+  const [userDistrict, setUserDistrict] = useState<string | null>(null);
   const [memberRequests, setMemberRequests] = useState<MemberRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set())
   const [searchQuery, setSearchQuery] = useState("");
 
-  const searchParams = useSearchParams();
-  const district= searchParams.get("district");
 
   const filteredRequests = memberRequests.filter((req) => {
     const q = searchQuery.toLowerCase();
@@ -53,26 +50,24 @@ export default function MemberRequests() {
     );
   });
 
-useEffect(() => {
+  useEffect(() => {
   const storedUser = localStorage.getItem("user");
   if (storedUser) {
     const parsedUser = JSON.parse(storedUser);
-    if (parsedUser.clubName) {
-      setClub(parsedUser.clubName);
+    if (parsedUser.district) {
+      setUserDistrict(parsedUser.district);
     }
   }
 }, []);
 
 
-
-
   useEffect(() => {
-  if(!clubName)  return;  
+    if (!userDistrict) return;
 
     const fetchMemberRequests = async () => {
       
       try {
-        const response = await fetch(`http://localhost:5000/${clubName}/head-request?district=${district}`, {
+        const response = await fetch(`http://localhost:5000/artclub/member-requests-council?district=${userDistrict}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -96,14 +91,14 @@ useEffect(() => {
 
 
     fetchMemberRequests()
-  }, [clubName]);
+  }, [userDistrict])
 
 
   const handleApprove = async (userId: string) => {
     setProcessingIds((prev) => new Set(prev).add(userId));
 
     try {
-      const response = await fetch(`http://localhost:5000/${clubName}/approve-head/?district=${district}&userid=${userId}`, {
+      const response = await fetch(`http://localhost:5000/artclub/approve-council/?district=${userDistrict}&userid=${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -137,7 +132,7 @@ useEffect(() => {
     setProcessingIds((prev) => new Set(prev).add(userId))
 
     try {
-      const response = await fetch(`http://localhost:5000/${clubName}/disapprove-head/?district=${district}&userid=${userId}`, {
+      const response = await fetch(`http://localhost:5000/artclub/disapprove-council/?district=${userDistrict}&userid=${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

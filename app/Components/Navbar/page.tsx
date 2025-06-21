@@ -12,6 +12,7 @@ function Navbar() {
   const [navType, setNavType] = useState("default") // 'default' | 'head' | 'member'
   const router = useRouter();
 
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user")
     const token = localStorage.getItem("jwt")
@@ -29,7 +30,7 @@ function Navbar() {
             if (data.head && data.head._id === parsedUser._id) {
               setNavType("head")
             } else {
-              setNavType("member")
+              setNavType("council")
             }
           })
           .catch(err => {
@@ -57,10 +58,10 @@ function Navbar() {
     head: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
       { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
-      { name: "Manage Council", icon: Settings, action: () => router.push('/Components/CABINATE/ManageCouncil') },
+      { name: "Manage Council", icon: Settings, action: () => router.push(`/Components/DISTRICT/ManageCouncil`) },
       { name: "Manage Roles", icon: Star, action: () => router.push('/Components/CABINATE/ManageRoles') },
     ],
-    member: [
+    council: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
       { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
       { name: "Club Info", icon: Sparkles, action: () => router.push('/Components/CABINATE/ClubInfo') },

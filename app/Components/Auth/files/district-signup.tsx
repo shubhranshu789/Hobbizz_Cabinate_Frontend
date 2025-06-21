@@ -560,7 +560,7 @@ export default function SignUp() {
           ip: ip,
           state: formData.state,
           district: formData.district,
-          clubName: formData.clubName.toUpperCase()
+          clubName: formData.clubName
           // school: formData.school,
         }),
       })
@@ -831,7 +831,7 @@ export default function SignUp() {
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
                           <SelectContent>
-                            {["Art", "Photography", "Dance"].map((category) => (
+                            {["artclub", "Photography", "dance"].map((category) => (
                               <SelectItem key={category} value={category}>
                                 {category}
                               </SelectItem>
