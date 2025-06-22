@@ -90,13 +90,7 @@ function Navbar() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-1">
-              {[
-                { name: "Home", icon: HomeIcon , id : "Home"},
-                // { name: "Add Activity", icon: Settings , id : "Add" },
-                { name: "Participate", icon: User , id : "About" },
-                { name: "Apply for Club", icon: Bell , id : "joinClub"},
-                { name: "Local Chapters", icon: Locate , id : "localChapter"},
-              ].map((item, index) => (
+              {currentNavItems.map((item, index) => (
                 <motion.div
                   key={item.name}
                   initial={{ opacity: 0, y: -20 }}
@@ -106,27 +100,10 @@ function Navbar() {
                   <Button
                     variant="ghost"
                     className="text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                    asChild
+                    onClick={item.action}
                   >
-                    <span style={{cursor : "pointer"}} className="flex items-center space-x-2"
-                      onClick={() => {
-                        if (item.id === "Add") {
-                          gotoAddActivity();
-                        }
-                        if (item.id === "Home") {
-                          gotohome();
-                        }
-                        if (item.id === "joinClub") {
-                          gotojoinclub();
-                        }
-                        if (item.id === "localChapter") {
-                          gotolocalchapter();
-                        }
-                      }}
-                    >
-                      <item.icon className="w-4 h-4" />
+                      <item.icon className="w-4 h-4 mr-2" />
                       <span>{item.name}</span>
-                    </span>
                   </Button>
                 </motion.div>
               ))}
