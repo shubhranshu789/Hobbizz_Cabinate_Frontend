@@ -5,8 +5,8 @@ import { useState, useEffect, useCallback } from "react"
 
 // Types
 enum ChapterStatus {
-  ACTIVE = "active",
-  INACTIVE = "inactive",
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
 }
 
 interface UserData {
@@ -38,6 +38,7 @@ interface Chapter {
 }
 
 const LocalChapterPage: React.FC = () => {
+  const [userData, setUserData] = useState<UserData | null>(null)
   const [chapters, setChapters] = useState<Chapter[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -48,7 +49,6 @@ const LocalChapterPage: React.FC = () => {
   const [chapterToDeleteId, setChapterToDeleteId] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>("")
-  const [userData, setUserData] = useState<UserData | null>(null)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -76,10 +76,11 @@ const LocalChapterPage: React.FC = () => {
 
   // Fetch chapters from API
   const fetchChapters = async () => {
+    if(!userData) return;
     try {
       setIsLoading(true)
       setError(null)
-      const response = await fetch(`http://localhost:5000/chapters`)
+      const response = await fetch(`http://localhost:5000/get-chapter?club=${userData.club}&district=${userData.district}`)
 
       if (!response.ok) {
         throw new Error(`Failed to fetch chapters: ${response.statusText}`)
@@ -97,7 +98,7 @@ const LocalChapterPage: React.FC = () => {
 
   useEffect(() => {
     fetchChapters()
-  }, [])
+  }, [userData])
 
   // Filter chapters based on search term
   const filteredChapters = chapters.filter(
@@ -150,11 +151,12 @@ const LocalChapterPage: React.FC = () => {
       const isEditing = !!selectedChapter?.chapter_id
       const url = isEditing
         ? `http://localhost:5000/update-chapter/${selectedChapter.chapter_id}`
-        : `http://localhost:5000/chapter/create-chapter`
+        : `http://localhost:5000/create-chapter`
       const method = isEditing ? "PUT" : "POST"
 
       const submitData = {
         ...formData,
+        date: new Date(formData.date),
         club: userData.club,
         district: userData.district,
         
@@ -164,6 +166,7 @@ const LocalChapterPage: React.FC = () => {
         method,
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("jwt")
         },
         body: JSON.stringify(submitData),
       })
