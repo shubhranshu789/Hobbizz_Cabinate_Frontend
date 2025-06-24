@@ -8,7 +8,7 @@ import Link from "next/link"
 
 import { useRouter } from 'next/navigation';
 
-// import "../../../Components/DISTRICT/ManageRoles"
+// import "../../../Components/DISTRICT/AddActivities/AllActivities"
 
 
 
@@ -22,7 +22,7 @@ function page() {
   // };
 
   const gotoAddActivity = () => {
-    router.push('/Components/DISTRICT/AddActivities');
+    router.push('/Components/DISTRICT/AddActivities/AllActivities');
   }
 
 
@@ -47,7 +47,7 @@ function page() {
 
   const logout = () => {
     localStorage.clear()
-    router.push('../../Components/Auth/SignIn');
+    router.push('/Components/Auth/SignIn');
     // window.location.reload();
   }
 

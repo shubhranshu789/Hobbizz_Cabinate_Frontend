@@ -65,26 +65,26 @@ function page() {
 
 
 
-  useEffect(() => {
-    const fetchUploadStatus = async () => {
-      if (!isRegistered) return;
+  // useEffect(() => {
+  //   const fetchUploadStatus = async () => {
+  //     if (!isRegistered) return;
 
-      try {
-        const token = localStorage.getItem("jwt");
-        const res = await fetch(`http://localhost:5000/has-uploaded/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await res.json();
-        setHasUploaded(data.hasUploaded);
-      } catch (error) {
-        console.error("Failed to fetch upload status", error);
-      }
-    };
+  //     try {
+  //       const token = localStorage.getItem("jwt");
+  //       const res = await fetch(`http://localhost:5000/has-uploaded/${id}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+  //       const data = await res.json();
+  //       setHasUploaded(data.hasUploaded);
+  //     } catch (error) {
+  //       console.error("Failed to fetch upload status", error);
+  //     }
+  //   };
 
-    fetchUploadStatus();
-  }, [isRegistered, id]);
+  //   fetchUploadStatus();
+  // }, [isRegistered, id]);
 
 
   useEffect(() => {
@@ -109,69 +109,98 @@ function page() {
   }, [id]);
 
 
+  const [approvedUploads, setApprovedUploads] = useState([]);
+  const [loadingApproved, setLoadingApproved] = useState(true);
 
-
-
-
-  const handleRegister = (activityId: string) => {
-    if (!token) {
-      alert("You must be logged in to register.");
-      return;
-    }
-
-    registerForActivity(activityId);
-  };
-
-
-  const registerForActivity = async (activityId: string) => {
-    try {
-      const response = await fetch(`http://localhost:5000/register-activity/${activityId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // send JWT token
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Successfully registered for the activity!");
-        console.log("Activity:", data.activity);
-        window.location.reload();
-      } else {
-        alert(data.message || "Registration failed.");
+  useEffect(() => {
+    const fetchApprovedUploads = async () => {
+      try {
+        setLoadingApproved(true);
+        const res = await fetch(`http://localhost:5000/activity/approved-uploads/${event?._id}`);
+        const data = await res.json();
+        setApprovedUploads(data.approvedUploads || []);
+      } catch (error) {
+        console.error("Error fetching approved uploads", error);
+      } finally {
+        setLoadingApproved(false);
       }
-    } catch (error) {
-      console.error("Registration error:", error);
-      alert("An error occurred while registering.");
+    };
+
+    if (event?._id) {
+      fetchApprovedUploads();
     }
-  };
+  }, [event?._id]);
 
-  const unregisterFromActivity = async (activityId: string) => {
-    try {
-      const response = await fetch(`http://localhost:5000/unregister-activity/${activityId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
 
-      const data = await response.json();
 
-      if (response.ok) {
-        alert("You have been unregistered from the event.");
-        console.log("Updated activity:", data.activity);
-        window.location.reload();
-      } else {
-        alert(data.message || "Failed to unregister.");
-      }
-    } catch (error) {
-      console.error("Unregister error:", error);
-      alert("An error occurred while unregistering.");
-    }
-  };
+
+
+
+  // const handleRegister = (activityId: string) => {
+  //   if (!token) {
+  //     alert("You must be logged in to register.");
+  //     return;
+  //   }
+
+  //   registerForActivity(activityId);
+  // };
+
+
+
+
+
+
+  // const registerForActivity = async (activityId: string) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:5000/register-activity/${activityId}`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`, // send JWT token
+  //       },
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (response.ok) {
+  //       alert("Successfully registered for the activity!");
+  //       console.log("Activity:", data.activity);
+  //       window.location.reload();
+  //     } else {
+  //       alert(data.message || "Registration failed.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Registration error:", error);
+  //     alert("An error occurred while registering.");
+  //   }
+  // };
+
+  // const unregisterFromActivity = async (activityId: string) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:5000/unregister-activity/${activityId}`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (response.ok) {
+  //       alert("You have been unregistered from the event.");
+  //       console.log("Updated activity:", data.activity);
+  //       window.location.reload();
+  //     } else {
+  //       alert(data.message || "Failed to unregister.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Unregister error:", error);
+  //     alert("An error occurred while unregistering.");
+  //   }
+  // };
+
+
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -284,7 +313,7 @@ function page() {
 
               </div>
             </CardContent>
-            <CardFooter>
+            {/* <CardFooter>
               <Button
                 onClick={() =>
                   isRegistered
@@ -298,11 +327,11 @@ function page() {
 
 
 
-            </CardFooter>
+            </CardFooter> */}
           </Card>
 
 
-          <div style={{ marginBottom: "30px" }}>
+          {/* <div style={{ marginBottom: "30px" }}>
             {isRegistered ? (
               hasUploaded ? (
                 <div className="w-full max-w-md mx-auto p-4 bg-white dark:bg-gray-900 shadow-lg rounded-lg">
@@ -347,78 +376,11 @@ function page() {
                 </p>
               </div>
             )}
-          </div>
+          </div> */}
 
 
           {/* Registration Status Card */}
-          <>
-            <Card className="shadow-md">
-              <CardHeader className="pb-3">
-                <h2 className="text-xl font-semibold">Registration Status</h2>
-              </CardHeader>
-              <CardContent>
-                {participants.length > 0 ? (
-                  <ul className="space-y-6">
-                    {participants.map((user, index) => (
-                      <li key={index} className="flex gap-4 items-start">
-                        <div className="w-32 h-32 rounded-lg overflow-hidden border border-gray-300">
-                          {user.pic ? (
-                            <img
-                              src={user.pic}
-                              alt="Upload"
-                              className="w-full h-full object-cover cursor-pointer"
-                              onClick={() => setOpenImage(user.pic)}
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-sm">
-                              No Photo
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 space-y-1">
-                          <p className="text-base font-semibold">{user.name}</p>
-                          <p className="text-sm text-muted-foreground">{user.email}</p>
-                          <p className="text-sm text-muted-foreground">IP: {user.ip}</p>
-                          <div className="flex gap-3 pt-2">
-                            <button className="px-4 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded-md">
-                              Approve
-                            </button>
-                            <button className="px-4 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md">
-                              Disapprove
-                            </button>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div className="text-center py-8">
-                    <Users className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                    <p className="text-muted-foreground">No registrations yet. Be the first to register!</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* 🔍 Enlarge Image Modal */}
-            {openImage && (
-              <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center">
-                <div className="relative">
-                  <img
-                    src={openImage}
-                    alt="Enlarged"
-                    className="max-h-[90vh] max-w-[90vw] rounded-lg shadow-xl"
-                  />
-                  <button
-                    onClick={() => setOpenImage(null)}
-                    className="absolute top-2 right-2 bg-white text-black px-3 py-1 rounded hover:bg-gray-200"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-          </>
+     
 
 
 
@@ -435,6 +397,45 @@ function page() {
 
 
         </div>
+
+
+
+        <div>
+          <div className="mt-10">
+            <h2 className="text-xl font-semibold mb-4">✅ Approved Uploads</h2>
+
+            {loadingApproved ? (
+              <p className="text-sm text-muted-foreground">Loading approved uploads...</p>
+            ) : approvedUploads?.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No uploads approved yet.</p>
+            ) : (
+              <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {approvedUploads.map((upload) => (
+                  <li
+                    key={upload._id}
+                    className="bg-white rounded-lg shadow-md border p-4 space-y-2"
+                  >
+                    <div className="w-full h-48 overflow-hidden rounded">
+                      <img
+                        src={upload.pic}
+                        alt="Approved Upload"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{upload.name}</p>
+                      <p className="text-sm text-gray-600">{upload.email}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Uploaded on {new Date(upload.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+
       </div>
     </div>
   )

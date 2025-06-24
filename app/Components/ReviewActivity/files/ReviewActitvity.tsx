@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { SetStateAction, useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { ThumbsUp, ThumbsDown, Search, Bell, LogOut, Home, PlusCircle, User, Info, Phone } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -28,14 +28,14 @@ function ReviewActitvity() {
 
     const [approvals, setApprovals] = useState({})
 
-  const handleApproval = (id, isApproved) => {
+  const handleApproval = (id: any, isApproved: boolean) => {
     setApprovals((prev) => ({
       ...prev,
       [id]: isApproved,
     }))
   }
 
-   const openActivityModal = (pic) => {
+   const openActivityModal = (pic: SetStateAction<null>) => {
     setSelectedActivity(pic)
   }
 
@@ -44,7 +44,7 @@ function ReviewActitvity() {
   }
 
 
-  const handleClickSubmitId = (id) => {
+  const handleClickSubmitId = (id: any) => {
    router.push(`../../../Components/ParticularActivityInfo?id=${id}`);
   };
 

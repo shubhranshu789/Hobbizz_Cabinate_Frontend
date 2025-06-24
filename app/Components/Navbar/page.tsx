@@ -6,11 +6,15 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, LogOut, User, Bell, Locate, Search, Sparkles, Home as HomeIcon, Settings, Star } from "lucide-react"
 import { useRouter } from 'next/navigation';
 
+
+
 function Navbar() {
   const [user, setUser] = useState(null)
   const [clubHead, setClubHead] = useState(null)
   const [navType, setNavType] = useState("default") // 'default' | 'head' | 'member'
   const router = useRouter();
+
+
 
 
   useEffect(() => {
@@ -46,6 +50,10 @@ function Navbar() {
   const logout = () => {
     router.push('/Components/Auth/SignIn')
     localStorage.clear()
+  }
+
+  const gotojoinclub = () => {
+    router.push("/Components/CABINATE/JoinClub")
   }
 
   const navOptions = {
