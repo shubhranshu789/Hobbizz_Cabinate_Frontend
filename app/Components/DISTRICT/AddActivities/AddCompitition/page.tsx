@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 
 import Navbar from "../../DirectorNavbar/page"
 
+// import "../../../../Components/DISTRICT/DirectorDashboard"
 
 export default function ActivityForm() {
    
@@ -89,7 +90,7 @@ export default function ActivityForm() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [title, setTitle] = useState("")
     const [desc, setDesc] = useState("")
-    const [category, setCategory] = useState("")
+    // const [category, setCategory] = useState("")
 
 
     useEffect(() => {
@@ -104,7 +105,7 @@ export default function ActivityForm() {
 
 
     if (url) {
-      fetch("http://localhost:5000/create-activity", {
+      fetch("http://localhost:5000/create-compitition", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -113,7 +114,7 @@ export default function ActivityForm() {
         body: JSON.stringify({
           title: title,
           desc: desc,
-          category: category,
+          // category: category,
           pic: url,
           
           
@@ -122,11 +123,13 @@ export default function ActivityForm() {
         .then(data => {
           if (data.error) {
             // notifyA(data.error)
+            alert(data.error)
             console.log(data.error);
             
           } else {
             // notifyB(data.message)
             console.log(data.message);
+            //  alert(data.message)
             // alert(data.message)
             gotohome();
             // navigate('/')
@@ -144,6 +147,7 @@ export default function ActivityForm() {
 
     if (selectedFile == null || title == "" || desc == "") {
     //   notifyA("Please add a picture and other fields too!!!");
+      alert("Please add a picture and other fields too!!!")
       return;
     }
 
@@ -163,7 +167,7 @@ export default function ActivityForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!selectedFile || !title || !desc || !category) {
+        if (!selectedFile || !title || !desc ) {
             alert("All fields are required.");
             return;
         }
@@ -171,7 +175,7 @@ export default function ActivityForm() {
         const formData = new FormData();
         formData.append("title", title);
         formData.append("desc", desc);
-        formData.append("category", category);
+        // formData.append("category", category);
         formData.append("pic", selectedFile); 
 
        
@@ -191,7 +195,7 @@ export default function ActivityForm() {
                         <CardHeader className="text-center space-y-4">
                             <div className="flex items-center justify-center gap-2 animate-in fade-in duration-1000 delay-300">
                                 <Sparkles className="h-8 w-8 text-white animate-pulse" />
-                                <CardTitle className="text-3xl font-bold text-white">Add New Affair</CardTitle>
+                                <CardTitle className="text-3xl font-bold text-white">Add New Compitition</CardTitle>
                                 <Sparkles className="h-8 w-8 text-white animate-pulse" />
                             </div>
                             <p className="text-white/80 animate-in fade-in duration-1000 delay-500">
@@ -291,7 +295,7 @@ export default function ActivityForm() {
                                 </div>
 
                                 {/* Category Dropdown */}
-                                <div className="space-y-2 animate-in slide-in-from-right duration-700 delay-500">
+                                {/* <div className="space-y-2 animate-in slide-in-from-right duration-700 delay-500">
                                     <Label htmlFor="category" className="text-white font-medium">
                                         Category
                                     </Label>
@@ -311,7 +315,7 @@ export default function ActivityForm() {
                                             </SelectItem>
                                         </SelectContent>
                                     </Select>
-                                </div>
+                                </div> */}
 
                                 {/* Submit Button */}
                                 <div className="pt-4 animate-in slide-in-from-bottom duration-700 delay-600">
