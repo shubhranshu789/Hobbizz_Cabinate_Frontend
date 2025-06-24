@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useState, useCallback, useRef } from "react"
+import { useEffect, useState, useCallback, useRef, Children } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Search, Users, Landmark, Loader2, AlertCircle, Activity, Clock, FileText } from "lucide-react"
+import { Search, Users, Landmark, Loader2, AlertCircle, Activity, Clock, FileText, School, SchoolIcon } from "lucide-react"
 
 import Navbar from "../DirectorNavbar/page"
 
@@ -14,9 +14,9 @@ import Navbar from "../DirectorNavbar/page"
 interface ClubDistrictInfo {
   district: string
   totalActivities: Number
-  totalMembers: Number
-  memberRequests: Number
-  pendingRequests: Number
+  totalSchools: Number
+  headRequests: Number
+  totalStudents: Number
 }
 interface Number {
   length: number
@@ -238,11 +238,11 @@ export default function DistrictPage() {
                 {/* Summary Cards - Only showing counts */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-blue-50 p-6 rounded-lg text-center hover:bg-blue-100 transition-colors">
-                    <Users className="w-8 h-8 mx-auto mb-3 text-blue-600" />
+                    <SchoolIcon className="w-8 h-8 mx-auto mb-3 text-blue-600" />
                     <div className="text-3xl font-bold text-blue-700 mb-1">
-                      {currentDistrictState.data.totalMembers.length}
+                      {currentDistrictState.data.totalSchools.length}
                     </div>
-                    <div className="text-sm text-gray-600 font-medium">Total Members</div>
+                    <div className="text-sm text-gray-600 font-medium">Total Schools</div>
                   </div>
 
                   <div className="bg-green-50 p-6 rounded-lg text-center hover:bg-green-100 transition-colors">
@@ -254,30 +254,34 @@ export default function DistrictPage() {
                   </div>
 
                   <div className="bg-yellow-50 p-6 rounded-lg text-center hover:bg-yellow-100 transition-colors">
-                    <Clock className="w-8 h-8 mx-auto mb-3 text-yellow-600" />
+                    <Users className="w-8 h-8 mx-auto mb-3 text-yellow-600" />
                     <div className="text-3xl font-bold text-yellow-700 mb-1">
-                      {currentDistrictState.data.pendingRequests.length}
+                      {currentDistrictState.data.totalStudents.length}
                     </div>
-                    <div className="text-sm text-gray-600 font-medium">Pending Requests</div>
+                    <div className="text-sm text-gray-600 font-medium">Total Students</div>
                   </div>
 
                   <div className="bg-purple-50 p-6 rounded-lg text-center hover:bg-purple-100 transition-colors">
                     <FileText className="w-8 h-8 mx-auto mb-3 text-purple-600" />
                     <div className="text-3xl font-bold text-purple-700 mb-1">
-                      {currentDistrictState.data.memberRequests.length}
+                      {currentDistrictState.data.headRequests.length}
                     </div>
-                    <div className="text-sm text-gray-600 font-medium">Member Requests</div>
+                    <div className="text-sm text-gray-600 font-medium">Head Requests</div>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex gap-3 mt-8">
-                  <Button className="w-full" size="lg">
-                    View Details
+                  <Button 
+                    className="w-half" 
+                    size="lg"
+                     
+                  >
+                    Activate Chapter
                   </Button>
                   <Button
-                    variant="outline"
-                    className="w-full"
+                    // variant="outline"
+                    className="w-half"
                     size="lg"
                     onClick={() => {
                       router.push(`../../../Components/DISTRICT/AssignHead?district=${encodeURIComponent(selectedDistrict)}`)

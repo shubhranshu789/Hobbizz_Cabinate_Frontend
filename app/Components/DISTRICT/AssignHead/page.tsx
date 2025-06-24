@@ -26,6 +26,7 @@ type MemberRequest = {
   name: string
   email: string
   district: string
+  school: string
   createdAt: string
   profilePicture?: string
 }
@@ -200,10 +201,10 @@ useEffect(() => {
   }
 
 
-  const groupedByDistrict = filteredRequests.reduce((groups, request) => {
-    const district = request.district || "Unknown District";
-    if (!groups[district]) groups[district] = [];
-    groups[district].push(request);
+  const groupedBySchool = filteredRequests.reduce((groups, request) => {
+    const school = request.school || "Unknown School";
+    if (!groups[school]) groups[school] = [];
+    groups[school].push(request);
     return groups;
   }, {} as Record<string, typeof memberRequests>);
 
@@ -239,9 +240,9 @@ useEffect(() => {
           </Card>
         ) : (
           <div>
-            {Object.entries(groupedByDistrict).map(([district, requests]) => (
-              <div key={district}>
-                <h2 className="text-xl font-bold mb-2">{district}</h2>
+            {Object.entries(groupedBySchool).map(([school, requests]) => (
+              <div key={school}>
+                <h2 className="text-xl font-bold mb-2">{school}</h2>
 
                 {requests.map((request, index) => (
                   <Card key={request._id} className="transition-all hover:shadow-md mb-4">

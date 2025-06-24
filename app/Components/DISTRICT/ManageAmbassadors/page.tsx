@@ -25,6 +25,7 @@ type MemberRequest = {
   name: string
   email: string
   district: string
+  school: string
   createdAt: string
   profilePicture?: string
 }
@@ -67,7 +68,7 @@ export default function MemberRequests() {
     const fetchMemberRequests = async () => {
       
       try {
-        const response = await fetch(`http://localhost:5000/artclub/member-requests-council?district=${userDistrict}`, {
+        const response = await fetch(`http://localhost:5000/artclub/ambassador-requests?district=${userDistrict}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -98,7 +99,7 @@ export default function MemberRequests() {
     setProcessingIds((prev) => new Set(prev).add(userId));
 
     try {
-      const response = await fetch(`http://localhost:5000/artclub/approve-council/?district=${userDistrict}&userid=${userId}`, {
+      const response = await fetch(`http://localhost:5000/artclub/approve-ambassador/?district=${userDistrict}&userid=${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -132,7 +133,7 @@ export default function MemberRequests() {
     setProcessingIds((prev) => new Set(prev).add(userId))
 
     try {
-      const response = await fetch(`http://localhost:5000/artclub/disapprove-council/?district=${userDistrict}&userid=${userId}`, {
+      const response = await fetch(`http://localhost:5000/artclub/disapprove-ambassador/?district=${userDistrict}&userid=${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -195,10 +196,10 @@ export default function MemberRequests() {
   }
 
 
-  const groupedByDistrict = filteredRequests.reduce((groups, request) => {
-    const district = request.district || "Unknown District";
-    if (!groups[district]) groups[district] = [];
-    groups[district].push(request);
+  const groupedBySchool = filteredRequests.reduce((groups, request) => {
+    const school = request.school || "Unknown School";
+    if (!groups[school]) groups[school] = [];
+    groups[school].push(request);
     return groups;
   }, {} as Record<string, typeof memberRequests>);
 
@@ -208,14 +209,14 @@ export default function MemberRequests() {
       <Navbar />
       <div style={{ marginTop: "60px" }} className="container mx-auto p-6 max-w-4xl">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold tracking-tight">Art Club Member Requests</h1>
-          <p className="text-muted-foreground mt-2">Review and manage pending membership requests for the Art Club</p>
+          <h1 className="text-3xl font-bold tracking-tight">Art Club School Ambassador Requests</h1>
+          <p className="text-muted-foreground mt-2">Review and manage pending ambassador requests for the Art Club</p>
         </div>
 
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Search by name, email, or district"
+            placeholder="Search by name, email, or school"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -234,9 +235,9 @@ export default function MemberRequests() {
           </Card>
         ) : (
           <div>
-            {Object.entries(groupedByDistrict).map(([district, requests]) => (
-              <div key={district}>
-                <h2 className="text-xl font-bold mb-2">{district}</h2>
+            {Object.entries(groupedBySchool).map(([school, requests]) => (
+              <div key={school}>
+                <h2 className="text-xl font-bold mb-2">{school}</h2>
 
                 {requests.map((request, index) => (
                   <Card key={request._id} className="transition-all hover:shadow-md mb-4">

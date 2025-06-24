@@ -142,11 +142,11 @@ export default function ArtClubPage() {
 
 
 
-  const handleJoinRequestCouncil = async () => {
+  const handleJoinRequestAmbassador = async () => {
     setIsLoading(true)
 
     try {
-      const response = await fetch(`http://localhost:5000/artclub/requestjoinforcouncil?district=${encodeURIComponent(district)}`, {
+      const response = await fetch(`http://localhost:5000/artclub/requestjoinforambassador?district=${encodeURIComponent(district)}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -159,8 +159,8 @@ export default function ArtClubPage() {
 
       setHasRequested(true)
       localStorage.setItem("artClubRequested", "true")
-      console.log("Request send for council");
-      
+      console.log("Request send for ambassador");
+
     } catch (error) {
       console.error("Failed to request join:", error)
     } finally {
@@ -440,8 +440,8 @@ export default function ArtClubPage() {
 
 
                   <div>
-                    <Button onClick={() => {handleJoinRequestCouncil()}} className="mt-4 w-full">
-                      Apply For Council
+                    <Button onClick={() => {handleJoinRequestAmbassador()}} className="mt-4 w-full">
+                      Apply For Ambassador
                     </Button>
                   </div>
 

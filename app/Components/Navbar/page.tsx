@@ -30,7 +30,7 @@ function Navbar() {
             if (data.head && data.head._id === parsedUser._id) {
               setNavType("head")
             } else {
-              setNavType("member")
+              setNavType("ambassador")
             }
           })
           .catch(err => {
@@ -58,13 +58,15 @@ function Navbar() {
     head: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
       { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
-      { name: "Manage Council", icon: Settings, action: () => router.push(`/Components/DISTRICT/ManageCouncil`) },
+      { name: "Manage Ambassadors", icon: Settings, action: () => router.push(`/Components/DISTRICT/ManageAmbassadors`) },
       { name: "Manage Roles", icon: Star, action: () => router.push('/Components/CABINATE/ManageRoles') },
     ],
-    council: [
+    ambassador: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
       { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
       { name: "Club Info", icon: Sparkles, action: () => router.push('/Components/CABINATE/ClubInfo') },
+      { name: "Manage Students", icon: Star, action: () => router.push('/Components/CABINATE/ManageStudents') },
+
     ],
   }
 
