@@ -115,7 +115,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Register Button */}
-                <Link href={event.id === 3 ? "/watercolor-competition" : "#"}>
+                <Link href={event.id === 3 ? "/Components/DISTRICT/LocalEventOverview" : "#"}>
                   <Button
                     className={`w-full ${
                       event.isPast
