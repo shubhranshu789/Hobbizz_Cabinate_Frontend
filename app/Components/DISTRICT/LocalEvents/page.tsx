@@ -3,8 +3,10 @@
 import type React from "react"
 import { useState, useEffect, useCallback } from "react"
 
+
+
 // Types
-enum ChapterStatus {
+enum EventStatus {
   ACTIVE = "Active",
   INACTIVE = "Inactive",
 }
@@ -14,13 +16,13 @@ interface UserData {
   district: string
 }
 
-interface Chapter {
-  chapter_id: string
+interface Event {
+  event_id: string
   title: string
   date: string
   venue: string
   description?: string
-  status: ChapterStatus
+  status: EventStatus
   created_at: string
   updated_at: string
   club_name: string
@@ -39,14 +41,14 @@ interface Chapter {
 
 const LocalChapterPage: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null)
-  const [chapters, setChapters] = useState<Chapter[]>([])
+  const [events, setEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false)
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false)
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState<boolean>(false)
-  const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null)
-  const [chapterToDeleteId, setChapterToDeleteId] = useState<string | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [eventToDeleteId, setEventToDeleteId] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>("")
 
@@ -56,7 +58,7 @@ const LocalChapterPage: React.FC = () => {
     date: "",
     venue: "",
     description: "",
-    status: ChapterStatus.ACTIVE,
+    status: EventStatus.ACTIVE,
   })
 
   // Get user data from localStorage
@@ -87,10 +89,10 @@ const LocalChapterPage: React.FC = () => {
       }
 
       const data = await response.json()
-      setChapters(data.chapters || [])
+      setEvents(data.events || [])
     } catch (error) {
-      console.error("Error fetching chapters:", error)
-      setError(error instanceof Error ? error.message : "Failed to load chapters")
+      console.error("Error fetching events:", error)
+      setError(error instanceof Error ? error.message : "Failed to load events")
     } finally {
       setIsLoading(false)
     }
@@ -100,32 +102,32 @@ const LocalChapterPage: React.FC = () => {
     fetchChapters()
   }, [userData])
 
-  // Filter chapters based on search term
-  const filteredChapters = chapters.filter(
-    (chapter) =>
-      chapter.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      chapter.venue.toLowerCase().includes(searchTerm.toLowerCase()),
+  // Filter events based on search term
+  const filteredEvents = events.filter(
+    (event) =>
+      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.venue.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   // Form handlers
-  const openForm = (chapter?: Chapter) => {
-    if (chapter) {
-      setSelectedChapter(chapter)
+  const openForm = (event?: Event) => {
+    if (event) {
+      setSelectedEvent(event)
       setFormData({
-        title: chapter.title || "",
-        date: chapter.date || "",
-        venue: chapter.venue || "",
-        description: chapter.description || "",
-        status: chapter.status || ChapterStatus.ACTIVE,
+        title: event.title || "",
+        date: event.date || "",
+        venue: event.venue || "",
+        description: event.description || "",
+        status: event.status || EventStatus.ACTIVE,
       })
     } else {
-      setSelectedChapter(null)
+      setSelectedEvent(null)
       setFormData({
         title: "",
         date: "",
         venue: "",
         description: "",
-        status: ChapterStatus.ACTIVE,
+        status: EventStatus.ACTIVE,
       })
     }
     setIsFormOpen(true)
@@ -133,7 +135,7 @@ const LocalChapterPage: React.FC = () => {
 
   const closeForm = () => {
     setIsFormOpen(false)
-    setSelectedChapter(null)
+    setSelectedEvent(null)
   }
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -148,9 +150,9 @@ const LocalChapterPage: React.FC = () => {
       setIsSubmitting(true)
       setError(null)
 
-      const isEditing = !!selectedChapter?.chapter_id
+      const isEditing = !!selectedEvent?.event_id
       const url = isEditing
-        ? `http://localhost:5000/update-event/${selectedChapter.chapter_id}`
+        ? `http://localhost:5000/update-event/${selectedEvent.event_id}`
         : `http://localhost:5000/create-event`
       const method = isEditing ? "PUT" : "POST"
 
@@ -178,17 +180,17 @@ const LocalChapterPage: React.FC = () => {
       const result = await response.json()
 
       if (isEditing) {
-        setChapters((prevChapters) =>
-          prevChapters.map((c) => (c.chapter_id === selectedChapter.chapter_id ? result.chapter : c)),
+        setEvents((prevEvents) =>
+          prevEvents.map((c) => (c.event_id === selectedEvent.event_id ? result.event : c)),
         )
       } else {
-        setChapters((prevChapters) => [result.chapter, ...prevChapters])
+        setEvents((prevEvents) => [result.event, ...prevEvents])
       }
 
       closeForm()
     } catch (error) {
-      console.error("Error submitting chapter:", error)
-      setError(error instanceof Error ? error.message : "Failed to save chapter")
+      console.error("Error submitting event:", error)
+      setError(error instanceof Error ? error.message : "Failed to save event")
     } finally {
       setIsSubmitting(false)
     }
@@ -203,47 +205,47 @@ const LocalChapterPage: React.FC = () => {
   }
 
   // Detail modal handlers
-  const openDetail = (chapter: Chapter) => {
-    setSelectedChapter(chapter)
+  const openDetail = (event: Event) => {
+    setSelectedEvent(event)
     setIsDetailOpen(true)
   }
 
   const closeDetail = () => {
     setIsDetailOpen(false)
-    setSelectedChapter(null)
+    setSelectedEvent(null)
   }
 
   // Delete handlers
-  const openDeleteConfirm = (chapterId: string) => {
-    setChapterToDeleteId(chapterId)
+  const openDeleteConfirm = (eventId: string) => {
+    setEventToDeleteId(eventId)
     setIsDeleteConfirmOpen(true)
   }
 
   const closeDeleteConfirm = () => {
-    setChapterToDeleteId(null)
+    setEventToDeleteId(null)
     setIsDeleteConfirmOpen(false)
   }
 
   const handleDelete = async () => {
-    if (!chapterToDeleteId) return
+    if (!eventToDeleteId) return
 
     try {
       setIsSubmitting(true)
       setError(null)
 
-      const response = await fetch(`http://localhost:5000/delete-chapter/${chapterToDeleteId}`, {
+      const response = await fetch(`http://localhost:5000/delete-event/?eventId=${eventToDeleteId}`, {
         method: "DELETE",
       })
 
       if (!response.ok) {
-        throw new Error("Failed to delete chapter")
+        throw new Error("Failed to delete event")
       }
 
-      setChapters((prevChapters) => prevChapters.filter((c) => c.chapter_id !== chapterToDeleteId))
+      setEvents((prevEvents) => prevEvents.filter((c) => c.event_id !== eventToDeleteId))
       closeDeleteConfirm()
     } catch (error) {
-      console.error("Error deleting chapter:", error)
-      setError(error instanceof Error ? error.message : "Failed to delete chapter")
+      console.error("Error deleting event:", error)
+      setError(error instanceof Error ? error.message : "Failed to delete event")
     } finally {
       setIsSubmitting(false)
     }
@@ -251,16 +253,16 @@ const LocalChapterPage: React.FC = () => {
 
   // Toggle status
   const toggleStatus = useCallback(
-    async (chapterId: string) => {
-      const chapter = chapters.find((c) => c.chapter_id === chapterId)
-      if (!chapter) return
+    async (eventId: string) => {
+      const event = events.find((c) => c.event_id === eventId)
+      if (!event) return
 
-      const newStatus = chapter.status === ChapterStatus.ACTIVE ? ChapterStatus.INACTIVE : ChapterStatus.ACTIVE
+      const newStatus = event.status === EventStatus.ACTIVE ? EventStatus.INACTIVE : EventStatus.ACTIVE
 
       try {
         setError(null)
 
-        const response = await fetch(`http://localhost:5000/update-chapter-status/${chapterId}`, {
+        const response = await fetch(`http://localhost:5000/update-chapter-status/${eventId}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -272,19 +274,19 @@ const LocalChapterPage: React.FC = () => {
           throw new Error("Failed to update chapter status")
         }
 
-        setChapters((prevChapters) =>
-          prevChapters.map((c) => (c.chapter_id === chapterId ? { ...c, status: newStatus } : c)),
+        setEvents((prevEvents) =>
+          prevEvents.map((c) => (c.event_id === eventId ? { ...c, status: newStatus } : c)),
         )
 
-        if (selectedChapter && selectedChapter.chapter_id === chapterId) {
-          setSelectedChapter((prev) => (prev ? { ...prev, status: newStatus } : null))
+        if (selectedEvent && selectedEvent.event_id === eventId) {
+          setSelectedEvent((prev) => (prev ? { ...prev, status: newStatus } : null))
         }
       } catch (error) {
         console.error("Error toggling status:", error)
         setError(error instanceof Error ? error.message : "Failed to update status")
       }
     },
-    [chapters, selectedChapter],
+    [events, selectedEvent],
   )
 
   return (
@@ -294,8 +296,8 @@ const LocalChapterPage: React.FC = () => {
         <div className="bg-white rounded-2xl shadow-xl border border-blue-100 p-8 mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">Chapter Management</h1>
-              <p className="text-lg text-gray-600">Manage your organization chapters efficiently</p>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">Event Management</h1>
+              <p className="text-lg text-gray-600">Manage your organization events efficiently</p>
               {userData && (
                 <p className="text-sm text-blue-600 mt-2">
                   {userData.club} • {userData.district}
@@ -333,7 +335,7 @@ const LocalChapterPage: React.FC = () => {
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
-                Create Chapter
+                Create Event
               </button>
             </div>
           </div>
@@ -368,10 +370,10 @@ const LocalChapterPage: React.FC = () => {
                 ></path>
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Loading Chapters</h3>
-            <p className="text-gray-600">Please wait while we fetch your chapters...</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Loading Events</h3>
+            <p className="text-gray-600">Please wait while we fetch your events...</p>
           </div>
-        ) : filteredChapters.length === 0 ? (
+        ) : filteredEvents.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-xl border border-blue-100 p-16 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
               <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -399,20 +401,20 @@ const LocalChapterPage: React.FC = () => {
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
-                Create Your First Chapter
+                Create Your First Event
               </button>
             )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredChapters.map((chapter) => (
+            {filteredEvents.map((event) => (
               <div
-                key={chapter.chapter_id}
+                key={event.event_id}
                 className="bg-white rounded-2xl shadow-lg border border-blue-100 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">{chapter.title}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">{event.title}</h3>
                     <p className="text-gray-600 flex items-center mb-1">
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
@@ -422,7 +424,7 @@ const LocalChapterPage: React.FC = () => {
                           d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4v10m6-10v10m-6-4h6"
                         />
                       </svg>
-                      {new Date(chapter.date).toLocaleDateString()}
+                      {new Date(event.date).toLocaleDateString()}
                     </p>
                     <p className="text-gray-600 flex items-center">
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -439,35 +441,35 @@ const LocalChapterPage: React.FC = () => {
                           d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                         />
                       </svg>
-                      {chapter.venue}
+                      {event.venue}
                     </p>
                   </div>
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      chapter.status === ChapterStatus.ACTIVE
+                      event.status === EventStatus.ACTIVE
                         ? "bg-green-100 text-green-800"
                         : "bg-red-100 text-red-800"
                     }`}
                   >
-                    {chapter.status}
+                    {event.status}
                   </span>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
                   <button
-                    onClick={() => openDetail(chapter)}
+                    onClick={() => openDetail(event)}
                     className="flex-1 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors duration-200 text-sm font-medium"
                   >
                     View Details
                   </button>
                   <button
-                    onClick={() => openForm(chapter)}
+                    onClick={() => openForm(event)}
                     className="px-3 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-sm font-medium"
                   >
                     Edit
                   </button>
                   <button
-                    onClick={() => openDeleteConfirm(chapter.chapter_id)}
+                    onClick={() => openDeleteConfirm(event.event_id)}
                     className="px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors duration-200 text-sm font-medium"
                   >
                     Delete
@@ -485,7 +487,7 @@ const LocalChapterPage: React.FC = () => {
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h2 className="text-2xl font-bold text-gray-900">
-                    {selectedChapter ? "Edit Chapter" : "Create New Chapter"}
+                    {selectedEvent ? "Edit Event" : "Create New Event"}
                   </h2>
                   <button
                     onClick={closeForm}
@@ -558,8 +560,8 @@ const LocalChapterPage: React.FC = () => {
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   >
-                    <option value={ChapterStatus.ACTIVE}>Active</option>
-                    <option value={ChapterStatus.INACTIVE}>Inactive</option>
+                    <option value={EventStatus.ACTIVE}>Active</option>
+                    <option value={EventStatus.INACTIVE}>Inactive</option>
                   </select>
                 </div>
 
@@ -612,10 +614,10 @@ const LocalChapterPage: React.FC = () => {
                         </svg>
                         Saving...
                       </span>
-                    ) : selectedChapter ? (
-                      "Update Chapter"
+                    ) : selectedEvent ? (
+                      "Update Event"
                     ) : (
-                      "Create Chapter"
+                      "Create Event"
                     )}
                   </button>
                 </div>
@@ -625,12 +627,12 @@ const LocalChapterPage: React.FC = () => {
         )}
 
         {/* Detail Modal */}
-        {isDetailOpen && selectedChapter && (
+        {isDetailOpen && selectedEvent && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-bold text-gray-900">Chapter Details</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">Event Details</h2>
                   <button
                     onClick={closeDetail}
                     className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
@@ -645,7 +647,7 @@ const LocalChapterPage: React.FC = () => {
               <div className="p-6 space-y-6">
                 {/* Basic Information */}
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">{selectedChapter.title}</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">{selectedEvent.title}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Date</h4>
@@ -658,7 +660,7 @@ const LocalChapterPage: React.FC = () => {
                             d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4v10m6-10v10m-6-4h6"
                           />
                         </svg>
-                        {new Date(selectedChapter.date).toLocaleDateString()}
+                        {new Date(selectedEvent.date).toLocaleDateString()}
                       </p>
                     </div>
                     <div>
@@ -678,17 +680,17 @@ const LocalChapterPage: React.FC = () => {
                             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                           />
                         </svg>
-                        {selectedChapter.venue}
+                        {selectedEvent.venue}
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Description */}
-                {selectedChapter.description && (
+                {selectedEvent.description && (
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
-                    <p className="text-gray-600">{selectedChapter.description}</p>
+                    <p className="text-gray-600">{selectedEvent.description}</p>
                   </div>
                 )}
 
@@ -697,12 +699,12 @@ const LocalChapterPage: React.FC = () => {
                   <h4 className="font-semibold text-gray-900 mb-2">Status</h4>
                   <span
                     className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${
-                      selectedChapter.status === ChapterStatus.ACTIVE
+                      selectedEvent.status === EventStatus.ACTIVE
                         ? "bg-green-100 text-green-800"
                         : "bg-red-100 text-red-800"
                     }`}
                   >
-                    {selectedChapter.status}
+                    {selectedEvent.status}
                   </span>
                 </div>
 
@@ -712,12 +714,12 @@ const LocalChapterPage: React.FC = () => {
                   <div className="space-y-2">
                     <div>
                       <span className="font-medium text-gray-700">Club Name:</span>
-                      <p className="text-gray-600">{selectedChapter.club_name}</p>
+                      <p className="text-gray-600">{selectedEvent.club_name}</p>
                     </div>
                     <div>
                       <span className="font-medium text-gray-700">Club Director:</span>
-                      <p className="text-gray-600">{selectedChapter.club_director_name}</p>
-                      <p className="text-gray-600 text-sm">{selectedChapter.club_director_email}</p>
+                      <p className="text-gray-600">{selectedEvent.club_director_name}</p>
+                      <p className="text-gray-600 text-sm">{selectedEvent.club_director_email}</p>
                     </div>
                   </div>
                 </div>
@@ -728,22 +730,22 @@ const LocalChapterPage: React.FC = () => {
                   <div className="space-y-2">
                     <div>
                       <span className="font-medium text-gray-700">District Name:</span>
-                      <p className="text-gray-600">{selectedChapter.district_name}</p>
+                      <p className="text-gray-600">{selectedEvent.district_name}</p>
                     </div>
                     <div>
                       <span className="font-medium text-gray-700">District Head:</span>
-                      <p className="text-gray-600">{selectedChapter.district_head_name}</p>
-                      <p className="text-gray-600 text-sm">{selectedChapter.district_head_email}</p>
+                      <p className="text-gray-600">{selectedEvent.district_head_name}</p>
+                      <p className="text-gray-600 text-sm">{selectedEvent.district_head_email}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Council Members */}
-                {selectedChapter.council_members && selectedChapter.council_members.length > 0 && (
+                {selectedEvent.council_members && selectedEvent.council_members.length > 0 && (
                   <div className="bg-yellow-50 rounded-xl p-4">
                     <h4 className="font-semibold text-gray-900 mb-3">Council Members</h4>
                     <div className="space-y-3">
-                      {selectedChapter.council_members.map((member, index) => (
+                      {selectedEvent.council_members.map((member, index) => (
                         <div key={index} className="border-l-4 border-yellow-400 pl-4">
                           <div className="flex justify-between items-start">
                             <div>
@@ -784,21 +786,21 @@ const LocalChapterPage: React.FC = () => {
                 )}
 
                 <div className="text-sm text-gray-500 space-y-1">
-                  <p>Created: {new Date(selectedChapter.created_at).toLocaleDateString()}</p>
-                  <p>Updated: {new Date(selectedChapter.updated_at).toLocaleDateString()}</p>
+                  <p>Created: {new Date(selectedEvent.created_at).toLocaleDateString()}</p>
+                  <p>Updated: {new Date(selectedEvent.updated_at).toLocaleDateString()}</p>
                 </div>
               </div>
 
               <div className="p-6 border-t border-gray-200 flex justify-end space-x-4">
                 <button
-                  onClick={() => toggleStatus(selectedChapter.chapter_id)}
+                  onClick={() => toggleStatus(selectedEvent.event_id)}
                   className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
-                    selectedChapter.status === ChapterStatus.ACTIVE
+                    selectedEvent.status === EventStatus.ACTIVE
                       ? "bg-red-50 text-red-700 hover:bg-red-100"
                       : "bg-green-50 text-green-700 hover:bg-green-100"
                   }`}
                 >
-                  {selectedChapter.status === ChapterStatus.ACTIVE ? "Deactivate" : "Activate"}
+                  {selectedEvent.status === EventStatus.ACTIVE ? "Deactivate" : "Activate"}
                 </button>
                 <button
                   onClick={closeDetail}

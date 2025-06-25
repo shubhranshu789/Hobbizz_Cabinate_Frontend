@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, LogOut, User, Bell, Locate, Search, Sparkles, Home as HomeIcon, Settings, Star } from "lucide-react"
+import { Menu, LogOut, User, Bell, Locate, Search, Sparkles, Home as HomeIcon, Settings, Star, School, Flag, Settings2 } from "lucide-react"
 import { useRouter } from 'next/navigation';
 
 
@@ -65,9 +65,9 @@ function Navbar() {
     ],
     head: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
-      { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
-      { name: "Manage Ambassadors", icon: Settings, action: () => router.push(`/Components/DISTRICT/ManageAmbassadors`) },
-      { name: "Manage Roles", icon: Star, action: () => router.push('/Components/CABINATE/ManageRoles') },
+      { name: "Manage Events", icon: Flag, action: () => router.push('/Components/DISTRICT/LocalEvents') },
+      { name: "Manage Ambassadors", icon: User, action: () => router.push(`/Components/DISTRICT/ManageAmbassadors`) },
+      { name: "Manage Schools", icon: School, action: () => router.push('/Components/CABINATE/ManageSchools') },
     ],
     ambassador: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
