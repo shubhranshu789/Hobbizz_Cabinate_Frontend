@@ -70,7 +70,7 @@ function Navbar() {
     ],
     ambassador: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
-      { name: "Local Events", icon: Flag, action: () => router.push('/Components/DISTRICT/LocalEvents') },
+      { name: "Local Events", icon: Flag, action: () => router.push('/Components/DISTRICT/LocalEventsDisplayPage') },
       { name: "Club Info", icon: Sparkles, action: () => router.push('/Components/DISTRICT/ClubInfo') },
       { name: "Manage Students", icon: User, action: () => router.push('/Components/DISTRICT/ManageStudents') },
 

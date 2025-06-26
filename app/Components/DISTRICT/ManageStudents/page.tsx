@@ -256,10 +256,10 @@ export default function Students() {
             isVisible ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"
           }`}
         >
-          <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+          <h4 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
             Students Management
-          </h1>
-          <p className="text-slate-600 text-lg">
+          </h4>
+          <p className="text-slate-600 text-md">
             {userdata.school} • {userdata.club} • {userdata.district}
           </p>
         </div>
