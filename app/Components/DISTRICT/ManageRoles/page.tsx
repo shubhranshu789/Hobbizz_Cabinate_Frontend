@@ -9,8 +9,6 @@ import { Separator } from "@/components/ui/separator"
 import { Check, X, Mail, Clock, AlertCircle } from "lucide-react"
 import { toast } from "sonner"
 
-import Navbar from "../DirectorNavbar/page"
-
 // interface MemberRequest {
 //   _id: string
 //   name: string
