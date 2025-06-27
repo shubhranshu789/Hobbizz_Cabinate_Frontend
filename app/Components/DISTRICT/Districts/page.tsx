@@ -181,16 +181,18 @@ export default function DistrictPage() {
   const currentDistrictState = selectedDistrict ? districtStates[selectedDistrict] : null
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-500 p-8">
+    <div>
+      <Navbar />
+    <div className="min-h-screen mt-8 bg-gradient-to-br from-blue-500 to-indigo-500 p-8">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">District Directory</h1>
+        <div className="text-start mb-8">
+          <h1 className="text-2xl font-bold text-white">District Directory</h1>
           {userInfo.clubName && (
-            <p className="text-blue-100 mb-4">
+            <p className="text-blue-100">
               Club: <span className="font-semibold">{userInfo.clubName}</span>
             </p>
           )}
-          <div className="flex justify-center items-center gap-2">
+          <div className="flex justify-end items-center gap-2">
             <Search className="text-white" />
             <Input
               placeholder="Search District..."
@@ -306,6 +308,7 @@ export default function DistrictPage() {
           </DialogContent>
         </Dialog>
       </div>
+    </div>
     </div>
   )
 }
