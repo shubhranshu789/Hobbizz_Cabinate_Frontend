@@ -33,24 +33,35 @@ interface UserData {
   name: string
 }
 
-// Mock user data - replace with actual user context/auth
-const mockUserData: UserData = {
-  club: "artclub",
-  district: "Varanasi",
-  name: "Tony Stark",
-}
-
 export default function ManageSchool() {
   const [schools, setSchools] = useState<School[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [userdata] = useState<UserData>(mockUserData)
   const [isVisible, setIsVisible] = useState(false)
 
+  // Get user data from localStorage
+  const [userdata, setUserdata] = useState<UserData>({
+    club: "",
+    district: "",
+    name: "",
+  })
+
+  // Initialize user data from localStorage
   useEffect(() => {
-    fetchSchools()
-    // Trigger animation after component mounts
-    setTimeout(() => setIsVisible(true), 100)
+      const userDataFromLocalStorage = localStorage.getItem('user');
+    if (userDataFromLocalStorage) {
+      const parsedUserData: UserData = JSON.parse(userDataFromLocalStorage);
+      setUserdata(parsedUserData);
+    }
+  }, [])
+
+  useEffect(() => {
+    // Only fetch schools if userdata has been initialized
+    if (userdata.club && userdata.district) {
+      fetchSchools()
+      // Trigger animation after component mounts
+      setTimeout(() => setIsVisible(true), 100)
+    }
   }, [userdata.club, userdata.district])
 
   const fetchSchools = async () => {
@@ -71,11 +82,9 @@ export default function ManageSchool() {
 
       // Sort schools alphabetically by name
       if (data.schools && Array.isArray(data.schools)) {
-      const sortedSchools = data.schools.sort((a: School, b: School) => a.school.localeCompare(b.school))
-      
-      setSchools(sortedSchools)
-      }
-      else{
+        const sortedSchools = data.schools.sort((a: School, b: School) => a.school.localeCompare(b.school))
+        setSchools(sortedSchools)
+      } else {
         setSchools([])
       }
     } catch (err) {
@@ -115,7 +124,8 @@ export default function ManageSchool() {
     )
   }
 
-  if (loading) {
+  // Show loading while initializing user data
+  if (!userdata.club || !userdata.district || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-50">
         <div className="container mx-auto p-4 space-y-4">
@@ -135,111 +145,130 @@ export default function ManageSchool() {
   }
 
   if (error) {
-    return <div className="text-red-500">{error}</div>
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-50 flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardContent className="p-6 text-center">
+            <div className="text-red-500 mb-4">
+              <SchoolIcon className="h-12 w-12 mx-auto mb-2" />
+              <h3 className="text-lg font-semibold">Error Loading Schools</h3>
+            </div>
+            <p className="text-slate-600 mb-4">{error}</p>
+            <button
+              onClick={fetchSchools}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Try Again
+            </button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
     <div>
       <Navbar />
-    <div className="min-h-screen mt-6 bg-gradient-to-br from-blue-50 via-white to-slate-50">
-      <div className="container mx-auto p-4 space-y-4">
-        {/* Header Section */}
-        <div
-          className={`space-y-2 mt-6  mb-2 transform transition-all duration-1000 ${
-            isVisible ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"
-          }`}
-        >
-          <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-            Manage Schools
-          </h1>
-          <p className="text-slate-600 text-lg">
-            {userdata.club} • {userdata.district}
-          </p>
-        </div>
+      <div className="min-h-screen mt-6 bg-gradient-to-br from-blue-50 via-white to-slate-50">
+        <div className="container mx-auto p-4 space-y-4">
+          {/* Header Section */}
+          <div
+            className={`space-y-2 mt-6 mb-2 transform transition-all duration-1000 ${
+              isVisible ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"
+            }`}
+          >
+            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              Manage Schools
+            </h1>
+            <p className="text-slate-600 text-lg">
+              <span className="capitalize">{userdata.club}</span> • {userdata.district}
+            </p>
+          </div>
 
-        {/* Total Count Card */}
-        <Card
-          className={`border-blue-200 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg transform transition-all duration-1000 delay-200 ${
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-          }`}
-        >
-          <CardContent className="p-1">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
-                <SchoolIcon className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-white">{schools.length}</p>
-                <p className="text-blue-100">Total Schools in {userdata.district}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Schools List */}
-        <div className="space-y-3">
-          {schools.length === 0 ? (
-            <Card className="border-slate-200 bg-white shadow-sm">
-              <CardContent className="p-6">
-                <div className="text-center py-8">
-                  <SchoolIcon className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-medium mb-2 text-slate-700">No Schools Found</h3>
-                  <p className="text-slate-500">
-                    No schools are registered for {userdata.club} in {userdata.district}.
-                  </p>
+          {/* Total Count Card */}
+          <Card
+            className={`border-blue-200 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg transform transition-all duration-1000 delay-200 ${
+              isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+            }`}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
+                  <SchoolIcon className="h-8 w-8 text-white" />
                 </div>
-              </CardContent>
-            </Card>
-          ) : (
-            schools.map((school, index) => (
-              <Card
-                key={school._id}
-                className={`border-slate-200 bg-white hover:shadow-lg transition-all duration-500 transform ${
-                  isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-                }`}
-                style={{
-                  transitionDelay: `${300 + index * 100}ms`,
-                }}
-              >
-                <CardHeader className="p-3 pb-2">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl font-bold text-slate-800">{school.school}</CardTitle>
-                    <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200">
-                      <GraduationCap className="h-3 w-3 mr-1" />
-                      School
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-3 pt-0">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Ambassador */}
-                    <ContactInfo
-                      user={school.ambassador}
-                      role="ambassador"
-                      roleIcon={<Users className="h-5 w-5 mx-auto" />}
-                    />
+                <div>
+                  <p className="text-3xl font-bold text-white">{schools.length}</p>
+                  <p className="text-blue-100">Total Schools in {userdata.district}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-                    {/* School Captain */}
-                    <ContactInfo
-                      user={school.captain}
-                      role="captain"
-                      roleIcon={<GraduationCap className="h-5 w-5 mx-auto" />}
-                    />
-
-                    {/* School Correspondent */}
-                    <ContactInfo
-                      user={school.correspondent}
-                      role="correspondent"
-                      roleIcon={<Mail className="h-5 w-5 mx-auto" />}
-                    />
+          {/* Schools List */}
+          <div className="space-y-3">
+            {schools.length === 0 ? (
+              <Card className="border-slate-200 bg-white shadow-sm">
+                <CardContent className="p-6">
+                  <div className="text-center py-8">
+                    <SchoolIcon className="h-16 w-16 text-slate-400 mx-auto mb-4" />
+                    <h3 className="text-xl font-medium mb-2 text-slate-700">No Schools Found</h3>
+                    <p className="text-slate-500">
+                      No schools are registered for <span className="capitalize">{userdata.club}</span> in{" "}
+                      {userdata.district}.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
-            ))
-          )}
+            ) : (
+              schools.map((school, index) => (
+                <Card
+                  key={school._id}
+                  className={`border-slate-200 bg-white hover:shadow-lg transition-all duration-500 transform ${
+                    isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+                  }`}
+                  style={{
+                    transitionDelay: `${300 + index * 100}ms`,
+                  }}
+                >
+                  <CardHeader className="p-3 pb-2">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-xl font-bold text-slate-800">{school.school}</CardTitle>
+                      <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200">
+                        <GraduationCap className="h-3 w-3 mr-1" />
+                        School
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* Ambassador */}
+                      <ContactInfo
+                        user={school.ambassador}
+                        role="ambassador"
+                        roleIcon={<Users className="h-5 w-5 mx-auto" />}
+                      />
+
+                      {/* School Captain */}
+                      <ContactInfo
+                        user={school.captain}
+                        role="captain"
+                        roleIcon={<GraduationCap className="h-5 w-5 mx-auto" />}
+                      />
+
+                      {/* School Correspondent */}
+                      <ContactInfo
+                        user={school.correspondent}
+                        role="correspondent"
+                        roleIcon={<Mail className="h-5 w-5 mx-auto" />}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </div>
   )
 }

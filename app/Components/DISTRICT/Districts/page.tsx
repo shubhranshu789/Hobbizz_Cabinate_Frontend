@@ -35,7 +35,7 @@ interface UserInfo {
   error: string | null
 }
 
-const districts = ["Varanasi", "Lucknow", "Kanpur", "Prayagraj", "Agra", "Noida", "Ghaziabad", "Jaunpur"]
+const districts = ["Varanasi", "Gurugram", "Ghaziabad", "Noida", "Gurgaon", "Muradabad", "Meerut", "Gautam Buddh Nagar", "Bulandshahr", "Faridabad", "Agra",   "Delhi"]
 
 // Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"

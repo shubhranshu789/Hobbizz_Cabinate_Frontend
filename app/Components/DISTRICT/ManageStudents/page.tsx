@@ -58,7 +58,7 @@ export default function Students() {
     } else {
       // Mock data for development
       setUserdata({
-        club: "artclub",
+        club: "alub",
         district: "Varanasi",
         school: "St. Mary's High School",
         name: "Tony Stark",
@@ -133,7 +133,7 @@ export default function Students() {
       setMakingCaptain(studentId)
 
       const response = await fetch("http://localhost:5000/make-captain", {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -155,7 +155,7 @@ export default function Students() {
       setCaptain(result.captain)
 
       // Optional: Show success message
-      console.log("Captain set successfully:", result.message)
+      alert("Captain set successfully:"+result.message)
     } catch (err) {
       console.error("Error setting captain:", err)
       setError(err instanceof Error ? err.message : "Failed to set captain")
