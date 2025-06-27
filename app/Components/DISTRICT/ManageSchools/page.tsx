@@ -19,7 +19,7 @@ interface User {
 
 interface School {
   _id: string
-  name: string
+  school: string
   district: string
   club: string
   ambassador?: User
@@ -67,11 +67,17 @@ export default function ManageSchool() {
       }
 
       const data = await response.json()
+      console.log(data)
 
       // Sort schools alphabetically by name
-      const sortedSchools = data.schools.sort((a: School, b: School) => a.name.localeCompare(b.name))
-
+      if (data.schools && Array.isArray(data.schools)) {
+      const sortedSchools = data.schools.sort((a: School, b: School) => a.school.localeCompare(b.school))
+      
       setSchools(sortedSchools)
+      }
+      else{
+        setSchools([])
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred")
     } finally {
@@ -197,7 +203,7 @@ export default function ManageSchool() {
               >
                 <CardHeader className="p-3 pb-2">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl font-bold text-slate-800">{school.name}</CardTitle>
+                    <CardTitle className="text-xl font-bold text-slate-800">{school.school}</CardTitle>
                     <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200">
                       <GraduationCap className="h-3 w-3 mr-1" />
                       School

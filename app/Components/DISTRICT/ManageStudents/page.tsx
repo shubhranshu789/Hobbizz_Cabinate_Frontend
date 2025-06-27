@@ -132,7 +132,7 @@ export default function Students() {
     try {
       setMakingCaptain(studentId)
 
-      const response = await fetch("http://localhost:5000/set-captain", {
+      const response = await fetch("http://localhost:5000/make-captain", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
