@@ -1,7 +1,7 @@
 "use client";
 import React from 'react'
 import { useSearchParams } from "next/navigation";
-import NavBar from "../Navbar/page"
+import NavBar from "../../PrincipleNavBar/page"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -45,7 +45,7 @@ function page() {
       }
     }
 
-    fetch(`http://localhost:5000/getactivity/${id}`, {
+    fetch(`http://localhost:5000/getCompitition/${id}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -73,7 +73,7 @@ function page() {
 
       try {
         const token = localStorage.getItem("jwt");
-        const res = await fetch(`http://localhost:5000/has-uploaded-user/${id}`, {
+        const res = await fetch(`http://localhost:5000/has-uploaded-compitition/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -93,7 +93,7 @@ function page() {
     const fetchParticipants = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        const res = await fetch(`http://localhost:5000/event-participants-user/${id}`, {
+        const res = await fetch(`http://localhost:5000/event-participants-compi/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -129,7 +129,7 @@ function page() {
 
   const registerForActivity = async (activityId: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/register-activity-user/${activityId}`, {
+      const response = await fetch(`http://localhost:5000/register-compitition/${activityId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -154,7 +154,7 @@ function page() {
 
   const unregisterFromActivity = async (activityId: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/unregister-activity-user/${activityId}`, {
+      const response = await fetch(`http://localhost:5000/unregister-compitition/${activityId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -208,7 +208,7 @@ function page() {
 
       if (result.url) {
         const token = localStorage.getItem("jwt");
-        const response = await fetch(`http://localhost:5000/upload-photo-user/${id}`, {
+        const response = await fetch(`http://localhost:5000/upload-photo-compitition/${id}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -235,59 +235,31 @@ function page() {
   };
 
 
-  const handleApproval = async (activityId: any, uploadId: any, isApproved: boolean) => {
-    try {
-      const res = await fetch(
-        `http://localhost:5000/activity/${isApproved ? "approve" : "disapprove"}-upload/${activityId}/${uploadId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+//   const handleApproval = async (activityId: any, uploadId: any, isApproved: boolean) => {
+//     try {
+//       const res = await fetch(
+//         `http://localhost:5000/activity/${isApproved ? "approve" : "disapprove"}-upload/${activityId}/${uploadId}`,
+//         {
+//           method: "PUT",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//         }
+//       );
 
-      const data = await res.json();
-      if (res.ok) {
-        alert(`Upload ${isApproved ? "approved" : "disapproved"} successfully.`);
-        // Optional: Refresh list
-      } else {
-        console.error("Error:", data.error);
-        alert("Failed to update.");
-      }
-    } catch (err) {
-      console.error("Request error:", err);
-      alert("Server error.");
-    }
-  };
-
-
-
-  const handleApprovalHallOfFame = async (activityId: any, uploadId: any, isHallofFame: boolean) => {
-    try {
-      const res = await fetch(
-        `http://localhost:5000/activity/${isHallofFame ? "approve" : "disapprove"}-halloffame/${activityId}/${uploadId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = await res.json();
-      if (res.ok) {
-        alert(`${isHallofFame ? "Added to hall of fame" : "Remove from hall of fame"} successfully.`);
-        // Optional: Refresh list
-      } else {
-        console.error("Error:", data.error);
-        alert("Failed to update.");
-      }
-    } catch (err) {
-      console.error("Request error:", err);
-      alert("Server error.");
-    }
-  };
+//       const data = await res.json();
+//       if (res.ok) {
+//         alert(`Upload ${isApproved ? "approved" : "disapproved"} successfully.`);
+//         // Optional: Refresh list
+//       } else {
+//         console.error("Error:", data.error);
+//         alert("Failed to update.");
+//       }
+//     } catch (err) {
+//       console.error("Request error:", err);
+//       alert("Server error.");
+//     }
+//   };
 
 
 
@@ -317,32 +289,6 @@ function page() {
 
 
 
-
-  const [hallOfFameUploads, setHallOfFameUploads] = useState([]);
-  const [loadingHallOfFame, setLoadingHallOfFame] = useState(true);
-
-  useEffect(() => {
-    const fetchHallOfFame = async () => {
-      try {
-        setLoadingHallOfFame(true);
-        const res = await fetch(`http://localhost:5000/activity/hallOfFamePosts/${event?._id}`);
-        const data = await res.json();
-        setHallOfFameUploads(data.approvedUploads || []);
-      } catch (error) {
-        console.error("Error fetching approved uploads", error);
-      } finally {
-        setLoadingHallOfFame(false);
-      }
-    };
-
-    if (event?._id) {
-      fetchHallOfFame();
-    }
-  }, [event?._id]);
-
-
-
-
   return (
     <div style={{ marginTop: "50px" }}>
       <NavBar />
@@ -350,7 +296,7 @@ function page() {
         <div className="max-w-4xl mx-auto">
           {/* Hero Section with Event Image */}
           <div className="relative w-full h-64 sm:h-80 md:h-96 rounded-2xl overflow-hidden mb-8 shadow-xl">
-            <Image src={event?.pic || "/placeholder.svg"} alt={event?.title || "/placeholder.svg"} fill className="object-cover" priority />
+            <Image src={event?.pic || ""} alt={event?.title || ""} fill className="object-cover" priority />
             <div className="absolute inset-0 bg-black/30 flex items-end">
               <div className="p-6 w-full">
                 <Badge className="mb-2 bg-primary hover:bg-primary/90 capitalize">{event?.category}</Badge>
@@ -378,10 +324,10 @@ function page() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
 
-                  {/* <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <User className="h-5 w-5 text-muted-foreground" />
                     <span>Posted by: {event?.postedBy[0].substring(0, 8)}...</span>
-                  </div> */}
+                  </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-muted-foreground" />
                     <span>{event?.Registrations.length} Registrations</span>
@@ -410,7 +356,7 @@ function page() {
           </Card>
 
 
-          <div style={{ marginBottom: "30px" }}>
+          {/* <div style={{ marginBottom: "30px" }}>
             {isRegistered ? (
               hasUploaded ? (
                 <div className="w-full max-w-md mx-auto p-4 bg-white dark:bg-gray-900 shadow-lg rounded-lg">
@@ -455,7 +401,7 @@ function page() {
                 </p>
               </div>
             )}
-          </div>
+          </div> */}
 
 
           {/* Registration Status Card */}
@@ -512,12 +458,13 @@ function page() {
                             onClick={() => setOpenImage(upload.pic)}
                           />
                         </div>
+
+                        
                         <div className="flex-1 space-y-1">
                           <p className="text-base font-semibold">{upload.name}</p>
                           <p className="text-sm text-muted-foreground">{upload.email}</p>
 
-                          {/* ✅ Approval Status Tag */}
-                          {upload.isApproved !== null && (
+                          {/* {upload.isApproved !== null && (
                             <span
                               className={`inline-block px-2 py-1 text-xs rounded-full font-semibold ${upload.isApproved
                                 ? "bg-green-100 text-green-800"
@@ -526,24 +473,9 @@ function page() {
                             >
                               {upload.isApproved ? "Approved" : "Disapproved"}
                             </span>
-                          )}
-                          {/* {upload.isHallofFame !== null && (
-                            <span
-                              className={`inline-block px-2 py-1 text-xs rounded-full font-semibold ${upload.isHallofFame
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                                }`}
-                            >
-                              {upload.isHallofFame ? "Approved" : "Disapproved"}
-                            </span>
                           )} */}
 
-
-
-
-
-
-                          <div className="flex gap-3 pt-2">
+                          {/* <div className="flex gap-3 pt-2">
                             <button
                               onClick={() => handleApproval(event?._id, upload.uploadId, true)}
                               className="px-4 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded-md"
@@ -556,30 +488,8 @@ function page() {
                             >
                               Disapprove
                             </button>
-                          </div>
-
-
-                          <div className="flex gap-3 pt-2">
-                            <button
-                              onClick={() => handleApprovalHallOfFame(event?._id, upload.uploadId, true)}
-                              className="px-4 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded-md"
-                            >
-                              Add to Hall of Fame
-                            </button>
-                            <button
-                              onClick={() => handleApprovalHallOfFame(event?._id, upload.uploadId, false)}
-                              className="px-4 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md"
-                            >
-                              Remove from hall of Fame
-                            </button>
-                          </div>
+                          </div> */}
                         </div>
-
-
-
-
-
-
 
 
 
@@ -648,76 +558,9 @@ function page() {
 
 
 
-      <div className="mt-10">
-        <h2 className="text-xl font-semibold mb-4">✅ Approved Uploads</h2>
-
-        {loadingApproved ? (
-          <p className="text-sm text-muted-foreground">Loading approved uploads...</p>
-        ) : approvedUploads?.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No uploads approved yet.</p>
-        ) : (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {approvedUploads.map((upload) => (
-              <li
-                key={upload._id}
-                className="bg-white rounded-lg shadow-md border p-4 space-y-2"
-              >
-                <div className="w-full h-48 overflow-hidden rounded">
-                  <img
-                    src={upload.pic}
-                    alt="Approved Upload"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">{upload.name}</p>
-                  <p className="text-sm text-gray-600">{upload.email}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Uploaded on {new Date(upload.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      
 
 
-
-
-      <div className="mt-10">
-        <h2 className="text-xl font-semibold mb-4">✅ Hall Of Fame</h2>
-
-        {loadingHallOfFame ? (
-          <p className="text-sm text-muted-foreground">Loading Hall of Fame...</p>
-        ) : hallOfFameUploads.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No Hall of Fame entries yet.</p>
-        ) : (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {hallOfFameUploads.map((upload) => (
-              <li
-                key={upload._id}
-                className="bg-white rounded-lg shadow-md border p-4 space-y-2"
-              >
-                <div className="w-full h-48 overflow-hidden rounded">
-                  <img
-                    src={upload.pic}
-                    alt={`Upload by ${upload.name}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">{upload.name}</p>
-                  <p className="text-sm text-gray-600">{upload.email}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Uploaded on {new Date(upload.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
 
 
 

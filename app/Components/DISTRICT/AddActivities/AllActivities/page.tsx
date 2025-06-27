@@ -44,7 +44,7 @@ export default function FullScreenButtons() {
             </Button>
 
             {/* Button 3 */}
-            <Button
+            {/* <Button
             variant="outline"
             className="h-full min-h-[200px] md:min-h-[300px] bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center gap-4 text-lg md:text-xl font-semibold shadow-lg hover:shadow-xl group"
             onClick={() => {router.push("/Components/DISTRICT/AddActivities/AddCompitition")}}
@@ -52,7 +52,7 @@ export default function FullScreenButtons() {
             <Users className="w-12 h-12 md:w-16 md:h-16 group-hover:scale-110 transition-transform duration-300" />
             <span className="text-center">Add Competition</span>
             <span className="text-sm md:text-base opacity-80 text-center max-w-xs">Connect with other creators</span>
-            </Button>
+            </Button> */}
 
             {/* Button 4 */}
             <Button

@@ -7,7 +7,6 @@ import { Menu, LogOut, User, Bell, Locate, Search, Sparkles, Home as HomeIcon, S
 import { useRouter } from 'next/navigation';
 
 
-
 function Navbar() {
   const [user, setUser] = useState(null)
   const [clubHead, setClubHead] = useState(null)
@@ -59,7 +58,7 @@ function Navbar() {
   const navOptions = {
     default: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
-      { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
+      { name: "Local Events", icon: Flag, action: () => router.push('/Components/DISTRICT/LocalEvents') },
       { name: "Participate", icon: User, action: () => router.push('/Components/ParticipateInActivity') },
       { name: "Apply for Club", icon: Bell, action: () => router.push('/Components/CABINATE/JoinClub') },
     ],
@@ -67,13 +66,13 @@ function Navbar() {
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
       { name: "Manage Events", icon: Flag, action: () => router.push('/Components/DISTRICT/LocalEvents') },
       { name: "Manage Ambassadors", icon: User, action: () => router.push(`/Components/DISTRICT/ManageAmbassadors`) },
-      { name: "Manage Schools", icon: School, action: () => router.push('/Components/CABINATE/ManageSchools') },
+      { name: "Manage Schools", icon: School, action: () => router.push(`/Components/DISTRICT/ManageSchools`) },
     ],
     ambassador: [
       { name: "Home", icon: HomeIcon, action: () => router.push('/Components/home') },
-      { name: "Local Chapters", icon: Locate, action: () => router.push('/Components/DISTRICT/LocalChapters') },
-      { name: "Club Info", icon: Sparkles, action: () => router.push('/Components/CABINATE/ClubInfo') },
-      { name: "Manage Students", icon: Star, action: () => router.push('/Components/CABINATE/ManageStudents') },
+      { name: "Local Events", icon: Flag, action: () => router.push('/Components/DISTRICT/LocalEventsDisplayPage') },
+      { name: "Club Info", icon: Sparkles, action: () => router.push('/Components/DISTRICT/ClubInfo') },
+      { name: "Manage Students", icon: User, action: () => router.push('/Components/DISTRICT/ManageStudents') },
 
     ],
   }
