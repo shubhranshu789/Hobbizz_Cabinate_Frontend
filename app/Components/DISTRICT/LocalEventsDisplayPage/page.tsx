@@ -26,7 +26,7 @@ const LocalEventsDisplayPage = () => {
   useEffect(() => {
     const storedUserData = localStorage.getItem("user");
     if (storedUserData) setUserData(JSON.parse(storedUserData));
-    else setIsLoading(false); // If no user, stop loading
+    else setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -87,7 +87,6 @@ const LocalEventsDisplayPage = () => {
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((event) => {
-            // Compute pretty date and status
             const dateObj = new Date(event.date);
             const prettyDate = dateObj.toLocaleDateString("en-GB", {
               day: "2-digit",
@@ -103,24 +102,26 @@ const LocalEventsDisplayPage = () => {
                 : event.status;
 
             return (
-              <Card
-                key={event.event_id}
-                className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-              >
-                {/* Event Image */}
-                <div className="relative h-48 bg-gradient-to-br from-blue-100 to-purple-100">
-                  <Image
-                    src={event.image || "/placeholder.svg?height=200&width=300"}
-                    alt={event.title}
-                    fill
-                    className="object-cover"
-                  />
+              <Card key={event.event_id} className="relative overflow-hidden">
+                <div className="h-40 bg-gradient-to-tr from-blue-200 via-indigo-100 to-purple-100 flex items-center justify-center">
+                  {/* Optionally show image */}
+                  {event.image ? (
+                    <Image
+                      src={event.image}
+                      alt={event.title}
+                      width={240}
+                      height={120}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <span className="text-2xl text-gray-400">No image</span>
+                  )}
                   {/* Date Badge */}
-                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1">
-                    <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                      <CalendarDays className="w-4 h-4" />
+                  <div className="absolute top-3 left-3">
+                    <Badge className="bg-white text-gray-800 font-semibold flex items-center">
+                      <CalendarDays className="w-4 h-4 mr-1" />
                       {prettyDate}
-                    </div>
+                    </Badge>
                   </div>
                   {/* Status Badge */}
                   <div className="absolute top-3 right-3">
