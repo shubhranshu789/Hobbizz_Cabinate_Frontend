@@ -16,15 +16,15 @@ interface Event {
 }
 
 const LocalEventOverviewPage = () => {
-  const { eventId } = useParams<{ eventId: string }>();
+  const { event_id } = useParams<{ event_id: string }>();
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!eventId) return;
+    if (!event_id) return;
     setIsLoading(true);
-    fetch(`http://localhost:5000/get-event/${eventId}`)
+    fetch(`http://localhost:5000/overview/event/${event_id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch event details");
         return res.json();
@@ -38,7 +38,7 @@ const LocalEventOverviewPage = () => {
         setError("Failed to load event details");
         setIsLoading(false);
       });
-  }, [eventId]);
+  }, [event_id]);
 
   if (isLoading) {
     return (
