@@ -14,11 +14,8 @@ import Link from "next/link"
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 
+// import "../../../Components/Auth/JudgeSignup"
 
-// import "../../../Components/Auth/SignUp"
-
-// import "../../../Components/Auth/PrincipleSignIn"
-// import "../../../Components/Auth/PrincipleSignUp"
 
 
 
@@ -58,46 +55,35 @@ export default function SignIn() {
   const router = useRouter();
 
   const handleClick1 = () => {
-    router.push('/Components/Auth/SignUp');
-  };
-  const gotoeditorSignup = () => {
-    router.push('/Components/Auth/EditorSignup');
-  };
-  const gotoeditorSignin = () => {
-    router.push('/Components/Auth/EditorSignIn');
+    router.push('./SignUp');
   };
 
 
   const GotoDashBoard = () => {
-    router.push('../../../Components/home');
+    router.push('/Components/EDITOR/EditorDashboard');
+  }
+  const GotoDashBoardDirector = () => {
+    router.push('/Components/EDITOR/EditorDashboard');
+  }
+  const GotoDistrictSignup = () => {
+    router.push('/Components/Auth/DistricctSignUp');
   }
 
 
+  const GotoJudgeDashBoard = () => {
+    router.push('/Components/Judge/JudgeDashBoard');
+  }
 
-  const GotoJudgeSignup = () => {
+
+  const GotoJudgeSignUp = () => {
     router.push('/Components/Auth/JudgeSignup');
   }
-  const GotoJudgeSignin = () => {
-    router.push('/Components/Auth/JudgeSignIn');
-  }
-
-
-  const GotoPrincipleSignUp = () => {
-    router.push("/Components/Auth/PrincipleSignUp")
-  }
-  const GotoPrincipleSignIn = () => {
-    router.push("/Components/Auth/PrincipleSignIn")
-  }
-
-  
-
 
   const postData = () => {
 
 
         //sending data to server
-        // fetch("http://localhost:5000/cabinate-signin", {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/cabinate-signin`, {
+        fetch("http://localhost:5000/judge-signin", {
             method: "post",
             headers: {
                 "Content-Type": "application/json",
@@ -121,7 +107,7 @@ export default function SignIn() {
                     localStorage.setItem("jwt", data.token);
                     localStorage.setItem("user", JSON.stringify(data.user));
                     // setUserLogin(true);
-                    GotoDashBoard();
+                    GotoJudgeDashBoard();
                 }
 
                 console.log(data);
@@ -219,6 +205,7 @@ export default function SignIn() {
                   <Sparkles className="w-8 h-8 text-white" />
                 </motion.div>
               </motion.div>
+              <CardTitle className="text-2xl font-bold text-gray-900">Judge Login</CardTitle>
               <CardTitle className="text-2xl font-bold text-gray-900">Welcome Back</CardTitle>
               <CardDescription className="text-gray-600">Sign in to your BOOSTUP account</CardDescription>
             </CardHeader>
@@ -335,122 +322,11 @@ export default function SignIn() {
                 >
                   <p className="text-sm text-gray-600">
                     {"Don't have an account? "}
-                    <span onClick={() => {handleClick1()}} style={{cursor : "pointer"}} className="text-blue-600 hover:text-blue-700 font-medium">
+                    <span onClick={() => {GotoJudgeSignUp()}} style={{cursor : "pointer"}} className="text-blue-600 hover:text-blue-700 font-medium">
                       Sign up
                     </span>
                   </p>
                 </motion.div>
-
-
-
-
-                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                  className="text-center"
-                >
-                  <p className="text-sm text-gray-600">
-                 
-                    <span onClick={() => {gotoeditorSignup()}} style={{cursor : "pointer"}} className="text-blue-600 hover:text-blue-700 font-medium">
-                      Editor SignUp
-                    </span>
-                  </p>
-                </motion.div>
-
-
-
-
-                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                  className="text-center"
-                >
-                  <p className="text-sm text-gray-600">
-                    
-                    <span onClick={() => {gotoeditorSignin()}} style={{cursor : "pointer"}} className="text-blue-600 hover:text-blue-700 font-medium">
-                     Editor SignIn
-                    </span>
-                  </p>
-                </motion.div>
-
-
-
-
-                  <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                  className="text-center"
-                >
-                  <p className="text-sm text-gray-600">
-                    
-                    <span onClick={() => {GotoJudgeSignin()}} style={{cursor : "pointer"}} className="text-blue-600 hover:text-blue-700 font-medium">
-                     Judge SignIn
-                    </span>
-                  </p>
-                </motion.div>
-
-
-
-
-
-
-                  <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                  className="text-center"
-                >
-                  <p className="text-sm text-gray-600">
-                    
-                    <span onClick={() => {GotoJudgeSignup()}} style={{cursor : "pointer"}} className="text-blue-600 hover:text-blue-700 font-medium">
-                     Judge SignUp
-                    </span>
-                  </p>
-                </motion.div>
-
-
-
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                  className="text-center"
-                >
-                  <p className="text-sm text-gray-600">
-                    
-                    <span onClick={() => {GotoPrincipleSignUp()}} style={{cursor : "pointer"}} className="text-blue-600 hover:text-blue-700 font-medium">
-                     Principle SignUp
-                    </span>
-                  </p>
-                </motion.div>
-
-
-
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                  className="text-center"
-                >
-                  <p className="text-sm text-gray-600">
-                    
-                    <span onClick={() => {GotoPrincipleSignIn()}} style={{cursor : "pointer"}} className="text-blue-600 hover:text-blue-700 font-medium">
-                     Principle SignIn
-                    </span>
-                  </p>
-                </motion.div>
-
-
-
-
-
-
-
               </form>
             </CardContent>
           </Card>
