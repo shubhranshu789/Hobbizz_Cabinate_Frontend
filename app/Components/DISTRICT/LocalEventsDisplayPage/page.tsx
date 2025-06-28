@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarDays, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import Navbar from "../../Navbar/page"
 
 interface Event {
   event_id: string;
@@ -53,7 +54,10 @@ const LocalEventsDisplayPage = () => {
 
   if (isLoading) {
     return (
+      <div>
+        <Navbar />
       <div className="text-center py-10 text-lg font-semibold">Loading events...</div>
+      </div>
     );
   }
 
@@ -65,18 +69,23 @@ const LocalEventsDisplayPage = () => {
 
   if (!events.length) {
     return (
+      <div>
+        <Navbar />
+      
       <div className="text-center py-10 text-gray-500 font-semibold">
         No events found for your district/club.
+      </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+      <Navbar />
+      <div className="max-w-6xl mt-6 mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+        <div className="text-center mt-6 mb-12">
+          <h1 className="text-3xl mt-6 md:text-4xl font-bold text-gray-900 mb-2">
             Local Events {userData?.district ? `in ${userData.district}` : ""}
           </h1>
           <p className="text-gray-600 text-lg">
@@ -145,7 +154,7 @@ const LocalEventsDisplayPage = () => {
                     <MapPin className="w-4 h-4" />
                     <span className="text-sm">Venue: {event.venue}</span>
                   </div>
-                  <Link href={`/Components/DISTRICT/LocalEventOverview/${event.event_id}`}>
+                  <Link href={`/Components/DISTRICT/LocalEventOverview?event_id=${encodeURIComponent(event.event_id)}`}>
                     <Button
                       className={`w-full ${
                         isPast

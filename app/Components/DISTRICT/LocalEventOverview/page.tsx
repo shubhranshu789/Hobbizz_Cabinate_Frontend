@@ -1,84 +1,91 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { CalendarDays, MapPin, Trophy, Clock, Globe, Building, Users } from 'lucide-react';
-import Link from "next/link";
+"use client"
+
+import { useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { CalendarDays, MapPin, Clock, Globe, Building, Users } from "lucide-react"
 
 interface Event {
-  event_id: string;
-  title: string;
-  date: string;
-  venue: string;
-  description?: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-  club_name: string;
-  club_director_name: string;
-  club_director_email: string;
-  district_name: string;
-  district_head_name: string;
-  district_head_email: string;
-  council_members?: Array<{
-    name: string;
-    position: string;
-    email: string;
-    phone?: string;
-  }>;
+  event_id: string
+  title: string
+  date: string
+  venue: string
+  description?: string
+  status: string
+  created_at: string
+  updated_at: string
+  club: string
+  director:{
+    name:string
+    email:string
+  }
+  district: string
+  head: {
+    name: string
+    email: string
+  }
 }
 
 export default function LocalEventOverviewPage() {
-  const { event_id } = useParams<{ event_id: string }>();
-  const [event, setEvent] = useState<Event | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [userData, setUserData] = useState<any>(null);
-
-  // Load user data from localStorage
-  useEffect(() => {
-    const storedUserData = localStorage.getItem("user");
-    if (storedUserData) {
-      try {
-        setUserData(JSON.parse(storedUserData));
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-      }
-    }
-  }, []);
+  const searchParams = useSearchParams();
+  const event_id = searchParams.get("event_id");
+  const [event, setEvent] = useState<Event | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
 
   // Fetch event details
   useEffect(() => {
-    if (!event_id || !userData) return;
-    
-    setIsLoading(true);
-    setError(null);
-    
-    // Use the same API pattern as LocalEventsDisplayPage
-    fetch(`http://localhost:5000/get-events?club=${userData.club}&district=${userData.district}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch events");
-        return res.json();
-      })
-      .then((data) => {
-        const events = data.events || [];
-        const foundEvent = events.find((e: Event) => e.event_id === event_id);
-        
-        if (!foundEvent) {
-          throw new Error("Event not found");
+    if (!event_id) {
+      setError("Event ID is missing")
+      setIsLoading(false)
+      return
+    }
+
+    const fetchEvent = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+
+        const response = await fetch(`http://localhost:5000/event-details?event_id=${encodeURIComponent(event_id)}`)
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch event: ${response.status} ${response.statusText}`)
         }
-        
-        setEvent(foundEvent);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching event:", err);
-        setError("Failed to load event details");
-        setIsLoading(false);
-      });
-  }, [event_id, userData]);
+
+        const data = await response.json()
+
+        // Since API returns a single event document, use it directly
+        if (data) {
+          setEvent(data)
+        } else {
+          throw new Error("Event not found or invalid response format")
+        }
+      } catch (err) {
+        console.error("Error fetching event:", err)
+        setError(err instanceof Error ? err.message : "Failed to load event details")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchEvent()
+  }, [event_id])
+
+  const handleGoBack = () => {
+    if (typeof window !== "undefined") {
+      window.history.back()
+    }
+  }
+
+  const handleRetry = () => {
+    if (event_id) {
+      setError(null)
+      setIsLoading(true)
+      // The useEffect will automatically re-run and fetch the data
+    }
+  }
 
   if (isLoading) {
     return (
@@ -88,42 +95,55 @@ export default function LocalEventOverviewPage() {
           <span className="text-lg font-semibold text-gray-700">Loading event details...</span>
         </div>
       </div>
-    );
+    )
   }
 
   if (error || !event) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <span className="text-red-500 font-semibold block mb-2 text-xl">
-            Failed to load event details
-          </span>
-          <p className="text-gray-600">Event ID: {event_id}</p>
-          <Button 
-            onClick={() => window.history.back()} 
-            className="mt-4 bg-blue-600 hover:bg-blue-700"
-          >
-            Go Back
-          </Button>
+        <div className="text-center max-w-md">
+          <span className="text-red-500 font-semibold block mb-2 text-xl">Failed to load event details</span>
+          <p className="text-gray-600 mb-2">{error}</p>
+          {event_id && <p className="text-gray-500 text-sm mb-4">Event ID: {event_id}</p>}
+          <div className="flex gap-2 justify-center">
+            <Button onClick={handleGoBack} variant="outline" className="bg-gray-100 hover:bg-gray-200">
+              Go Back
+            </Button>
+            <Button onClick={handleRetry} className="bg-blue-600 hover:bg-blue-700">
+              Try Again
+            </Button>
+          </div>
         </div>
       </div>
-    );
+    )
   }
 
-  const dateObj = new Date(event.date);
+  const dateObj = new Date(event.date)
   const prettyDate = dateObj.toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "long",
     year: "numeric",
-  });
+  })
   const prettyTime = dateObj.toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
-  });
-  const isPast = dateObj < new Date();
-  const daysUntilEvent = Math.ceil((dateObj.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+  })
 
-  const statusText = event.status === "Active" ? "Upcoming" : event.status === "Inactive" ? "Past Event" : event.status;
+  const isPast = dateObj < new Date()
+  const daysUntilEvent = Math.ceil((dateObj.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+
+  const getStatusText = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "active":
+        return "Upcoming"
+      case "inactive":
+        return "Past Event"
+      default:
+        return status
+    }
+  }
+
+  const statusText = getStatusText(event.status)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -151,7 +171,7 @@ export default function LocalEventOverviewPage() {
             ].map((tab) => (
               <button
                 key={tab.name}
-                className={`py-4 px-2 border-b-2 font-medium text-sm whitespace-nowrap ${
+                className={`py-4 px-2 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
                   tab.active
                     ? "border-orange-500 text-orange-600"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -174,12 +194,10 @@ export default function LocalEventOverviewPage() {
               <p className="text-xl text-gray-600 mb-6">
                 {event.description || "Join this amazing local event and be part of the community."}
               </p>
-              <Button 
-                size="lg" 
-                className={`px-8 py-3 ${
-                  isPast 
-                    ? "bg-gray-400 hover:bg-gray-500 cursor-not-allowed" 
-                    : "bg-blue-600 hover:bg-blue-700"
+              <Button
+                size="lg"
+                className={`px-8 py-3 transition-colors ${
+                  isPast ? "bg-gray-400 hover:bg-gray-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
                 }`}
                 disabled={isPast}
               >
@@ -195,10 +213,10 @@ export default function LocalEventOverviewPage() {
                   <div>
                     <p className="mb-2">• Open to all skill levels</p>
                     <p className="mb-2">• Local community event</p>
-                    <p className="mb-2">• Organized by {event.club_name}</p>
+                    <p className="mb-2">• Organized by {event.club}</p>
                   </div>
                   <div>
-                    <p className="mb-2">• District: {event.district_name}</p>
+                    <p className="mb-2">• District: {event.district}</p>
                     <p className="mb-2">• Status: {statusText}</p>
                     <p className="mb-2">• Registration required</p>
                   </div>
@@ -212,18 +230,20 @@ export default function LocalEventOverviewPage() {
                 <h3 className="text-xl font-semibold mb-4">About This Event</h3>
                 <div className="space-y-4 text-gray-600">
                   <p>
-                    {event.description || 
-                    `Join us for ${event.title}, an exciting community event organized by ${event.club_name}. 
+                    {event.description ||
+                      `Join us for ${event.title}, an exciting community event organized by ${event.club}. 
                     This is a great opportunity to connect with fellow community members and participate in 
                     local activities.`}
                   </p>
-                  
+
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <h4 className="font-semibold text-blue-900 mb-2">Event Organizer</h4>
                     <p className="text-blue-800 text-sm">
-                      <strong>{event.club_name}</strong><br />
-                      Director: {event.club_director_name}<br />
-                      Contact: {event.club_director_email}
+                      <strong>{event.club}</strong>
+                      <br />
+                      Director: {event.director.name}
+                      <br />
+                      Contact: {event.director.email}
                     </p>
                   </div>
                 </div>
@@ -237,11 +257,9 @@ export default function LocalEventOverviewPage() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <Badge className={`px-3 py-1 ${
-                    isPast 
-                      ? "bg-gray-100 text-gray-800" 
-                      : "bg-green-100 text-green-800"
-                  }`}>
+                  <Badge
+                    className={`px-3 py-1 ${isPast ? "bg-gray-100 text-gray-800" : "bg-green-100 text-green-800"}`}
+                  >
                     <Clock className="w-4 h-4 mr-1" />
                     {isPast ? "Event Ended" : `${daysUntilEvent} days to go`}
                   </Badge>
@@ -255,7 +273,6 @@ export default function LocalEventOverviewPage() {
                       {prettyDate} @ {prettyTime}
                     </p>
                   </div>
-
                   <div className="flex items-center justify-between">
                     <div className="flex items-center text-gray-600">
                       <Globe className="w-4 h-4 mr-2" />
@@ -266,14 +283,12 @@ export default function LocalEventOverviewPage() {
                       <span>Public</span>
                     </div>
                   </div>
-
                   <div className="flex items-center text-gray-600">
                     <Building className="w-4 h-4 mr-2" />
                     <Badge variant="outline" className="text-blue-600 border-blue-600">
-                      {event.club_name}
+                      {event.club}
                     </Badge>
                   </div>
-
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="secondary" className="bg-purple-100 text-purple-800">
                       Local Event
@@ -282,7 +297,7 @@ export default function LocalEventOverviewPage() {
                       Community
                     </Badge>
                     <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                      {event.district_name}
+                      {event.district}
                     </Badge>
                   </div>
                 </div>
@@ -298,7 +313,7 @@ export default function LocalEventOverviewPage() {
                     <MapPin className="w-4 h-4 mr-2 mt-1 flex-shrink-0" />
                     <div>
                       <p className="font-medium">{event.venue}</p>
-                      <p className="text-sm">{event.district_name}</p>
+                      <p className="text-sm">{event.district}</p>
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -319,13 +334,13 @@ export default function LocalEventOverviewPage() {
                 <div className="space-y-3 text-sm">
                   <div>
                     <p className="font-medium text-gray-900">Club Director</p>
-                    <p className="text-gray-600">{event.club_director_name}</p>
-                    <p className="text-blue-600">{event.club_director_email}</p>
+                    <p className="text-gray-600">{event.director.name}</p>
+                    <p className="text-blue-600">{event.director.email}</p>
                   </div>
                   <div className="border-t pt-3">
                     <p className="font-medium text-gray-900">District Head</p>
-                    <p className="text-gray-600">{event.district_head_name}</p>
-                    <p className="text-blue-600">{event.district_head_email}</p>
+                    <p className="text-gray-600">{event.head.name}</p>
+                    <p className="text-blue-600">{event.head.email}</p>
                   </div>
                 </div>
               </CardContent>
@@ -334,5 +349,5 @@ export default function LocalEventOverviewPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
